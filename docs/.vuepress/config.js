@@ -4,25 +4,29 @@ module.exports = {
     themeConfig: {
         nav: [
             {text: '主页', link: '/'},
-            {text: '笔记', 
-                items: [
-                    {text:'前端', link:'/front/'},
-                    {text:'node', link: '/node/'}
-                ]
-            },
+            {text: '笔记', link:'/front/'},
             // {text:'总结', link: '/about/'},
             {text:'Github', link: 'https://github.com/2xxxx'}
         ],
         sidebar: [
             {
                 title: 'JavaScript基础',
-                collapsable: false,
                 children: [
                     '/front/',
                     '/front/variable.md',
                     '/front/prototype.md',
                     '/front/scope.md',
                     '/front/ECMA.md',
+                ]
+            },{
+                title: '浏览器基础',
+                children: [
+                    '/browser/',
+                    '/browser/event.md',
+                    '/browser/crossDomain.md',
+                    '/browser/storage.md',
+                    '/browser/render.md',
+                    '/browser/eventLoop.md'
                 ]
             }
 

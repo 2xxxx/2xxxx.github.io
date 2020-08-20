@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>事件 | 学习笔记</title>
+    <meta name="generator" content="VuePress 1.5.3">
+    
+    <meta name="description" content="xcc的备忘笔记">
+    <link rel="preload" href="/assets/css/0.styles.abfd12c2.css" as="style"><link rel="preload" href="/assets/js/app.84307a97.js" as="script"><link rel="preload" href="/assets/js/2.591daaf2.js" as="script"><link rel="preload" href="/assets/js/8.edb2f87b.js" as="script"><link rel="prefetch" href="/assets/js/10.475d8cb3.js"><link rel="prefetch" href="/assets/js/11.b020a6f9.js"><link rel="prefetch" href="/assets/js/12.d1870fb6.js"><link rel="prefetch" href="/assets/js/13.9d5d45ca.js"><link rel="prefetch" href="/assets/js/14.0797fe26.js"><link rel="prefetch" href="/assets/js/15.c93b5974.js"><link rel="prefetch" href="/assets/js/16.ae16e300.js"><link rel="prefetch" href="/assets/js/17.ae7ccb87.js"><link rel="prefetch" href="/assets/js/3.3ae9385c.js"><link rel="prefetch" href="/assets/js/4.3b6a7e49.js"><link rel="prefetch" href="/assets/js/5.bc6e1aa4.js"><link rel="prefetch" href="/assets/js/6.43cd20c4.js"><link rel="prefetch" href="/assets/js/7.82b0daf5.js"><link rel="prefetch" href="/assets/js/9.0e657c2a.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.abfd12c2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">学习笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/front/" class="nav-link">
+  笔记
+</a></div><div class="nav-item"><a href="https://github.com/2xxxx" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/front/" class="nav-link">
+  笔记
+</a></div><div class="nav-item"><a href="https://github.com/2xxxx" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JavaScript基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>浏览器基础</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/browser/" aria-current="page" class="sidebar-link">浏览器存储</a></li><li><a href="/browser/event.html" aria-current="page" class="active sidebar-link">事件</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/browser/crossDomain.html" class="sidebar-link">/browser/crossDomain.html</a></li><li><a href="/browser/storage.html" class="sidebar-link">缓存与存储</a></li><li><a href="/browser/render.html" class="sidebar-link">浏览器渲染</a></li><li><a href="/browser/eventLoop.html" class="sidebar-link">事件队列</a></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="事件"><a href="#事件" class="header-anchor">#</a> 事件</h1> <p>页面或文档与用户交互的某个瞬间。<br>
+任何事件都要经历三个阶段：</p> <ol><li>事件捕获阶段</li> <li>目标对象处理阶段</li> <li>事件冒泡阶段<br>
+ps:尽量在事件冒泡阶段绑定回调函数处理事件，因为在捕获阶段存在兼容性问题(IE不支持)</li></ol> <h3 id="事件绑定"><a href="#事件绑定" class="header-anchor">#</a> 事件绑定</h3> <p>dom0级事件绑定<br>
+优点： 兼容性好，都能绑定。
+缺点：只能绑冒泡阶段；不能绑多个函数，存在覆盖问题；事件对象的获取存在兼容性。
+绑定方式有两种：一种是onclick=function(){},一种是标签内写onclick事件。</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;input id=&quot;input&quot; type=&quot;text&quot; onclick=&quot;alert(111)&quot; /&gt;
+
+document.getElementById('input').onclick =function() {
+    alert(222)
+}
+
+//弹出222
+</code></pre></div><p>dom2级事件绑定<br>
+优点： 既可以绑捕获阶段，也可以绑冒泡阶段；可以绑多个函数。
+缺点： IE和非IE绑定时要使用不同的dom2级事件方法；且this的含义不一样；事件对象的获取存在兼容性。<br>
+绑定方式：监听方法，addEventListener()和removeEventListener()这两个原生方法用来添加和移除事件。<br>
+第三个参数如果为true则表示在捕获阶段调用，为false在冒泡阶段调用，默认为false.
+dom0级和dom2级的事件可以同时存在</p> <div class="language- extra-class"><pre class="language-text"><code>&lt;input id=&quot;input&quot; type=&quot;text&quot; onclick=&quot;alert(111)&quot; /&gt;
+
+document.getElementById('input').onclick =function() {
+    alert(222)
+}
+document.getElementById('input').addEventListener('click',function() {
+    alert(333)
+},true)
+document.getElementById('input').addEventListener('click',function() {
+    alert(444)
+},true)
+document.getElementById('input').addEventListener('click',function() {
+    alert(555)
+},false)
+
+//兼容IE(移除用detachEvent)
+document.getElementById('input').attachEvent('onclick',function() {
+    alert(555)
+})
+
+//333 444 222 555
+</code></pre></div><p>IE与标准浏览器下捕获事件和冒泡事件的顺序问题
+捕获先执行，冒泡后执行。同在一个执行阶段则先绑定先执行</p> <div class="language- extra-class"><pre class="language-text"><code>var eventUtil = {};
+eventUtil.handler = function(obj, type, fun, isCapture) {
+    let isCapture = !!isCapture;
+     if(obj.attachEvent) {
+        //IE
+        if(isCapture) {
+            //捕获阶段
+            throw new Error('无法在该浏览器进行事件捕获')
+        }else  {
+            //冒泡阶段 
+            // obj.attachEvent('on'+ type, fun)
+        }
+     }else {
+         obj.addEventListener(type, fun, isCaptrue)
+     }
+    
+}
+</code></pre></div><h3 id="事件对象"><a href="#事件对象" class="header-anchor">#</a> 事件对象</h3> <div class="language- extra-class"><pre class="language-text"><code>window.onload = function() {
+    var a = document.getElementById('input');
+    a.onclick= function(e) {
+        e = e || window.event;      //兼容性获取事件
+        //console.log(e.type)       //'click'   
+
+        //阻止默认行为
+        if(e.preventDefault) {
+            e.preventDefault();      //标准浏览器下
+        }else {
+            e.returnValue = false;      //IE
+        }
+
+        //阻止事件的冒泡
+        if(e.stopPropagation) {
+            e.stopPropergation();       //标准浏览器
+        }else {
+            e.cancelBuble = true;       //IE
+        }
+
+        //获取事件源对象
+        if(e.target.tagName) {
+            console.log(e.target.tagName);  //标准浏览器
+        }else {
+            console.log(e.srcElement.tagName);  //IE
+        }
+    }
+}
+</code></pre></div><h3 id="事件性能优化"><a href="#事件性能优化" class="header-anchor">#</a> 事件性能优化</h3> <ol><li>事件清除</li></ol> <p>0级事件： <code>document.body.onclick = null</code>;</p> <p>2级事件：</p> <div class="language- extra-class"><pre class="language-text"><code>var fun =function() {console.log(123)};
+wondow.onload = function() {
+    document.body.onclick = function() {
+        console.log(123);
+    };
+    
+};
+document.body.onclick = null;       //0级事件
+document.body.addEventListener('click',fun);  //标准浏览器
+document.body.removeEventListener('click',fun);
+document.body.attachEvent('onclick',fun);   //IE浏览器
+document.detachEvent('onclick',fun);
+
+</code></pre></div><ol start="2"><li>事件委托
+原因：当子节点过多时如果给每一个子节点都绑定事件，会影响性能。
+利用了事件冒泡机制将子节点的事件绑定到父节点上，当鼠标点击子节点的时候，会冒泡到父节点上，通过event.target能获取到触发事件的子节点。</li></ol></div> <footer class="page-edit"><!----> <!----></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/browser/" class="prev router-link-active">
+        浏览器存储
+      </a></span> <span class="next"><a href="/browser/crossDomain.html">
+        /browser/crossDomain.html
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.84307a97.js" defer></script><script src="/assets/js/2.591daaf2.js" defer></script><script src="/assets/js/8.edb2f87b.js" defer></script>
+  </body>
+</html>
