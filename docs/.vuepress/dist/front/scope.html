@@ -7,7 +7,7 @@
     <meta name="generator" content="VuePress 1.5.3">
     
     <meta name="description" content="xcc的备忘笔记">
-    <link rel="preload" href="/assets/css/0.styles.abfd12c2.css" as="style"><link rel="preload" href="/assets/js/app.84307a97.js" as="script"><link rel="preload" href="/assets/js/2.591daaf2.js" as="script"><link rel="preload" href="/assets/js/15.c93b5974.js" as="script"><link rel="prefetch" href="/assets/js/10.475d8cb3.js"><link rel="prefetch" href="/assets/js/11.b020a6f9.js"><link rel="prefetch" href="/assets/js/12.d1870fb6.js"><link rel="prefetch" href="/assets/js/13.9d5d45ca.js"><link rel="prefetch" href="/assets/js/14.0797fe26.js"><link rel="prefetch" href="/assets/js/16.ae16e300.js"><link rel="prefetch" href="/assets/js/17.ae7ccb87.js"><link rel="prefetch" href="/assets/js/3.3ae9385c.js"><link rel="prefetch" href="/assets/js/4.3b6a7e49.js"><link rel="prefetch" href="/assets/js/5.bc6e1aa4.js"><link rel="prefetch" href="/assets/js/6.43cd20c4.js"><link rel="prefetch" href="/assets/js/7.82b0daf5.js"><link rel="prefetch" href="/assets/js/8.edb2f87b.js"><link rel="prefetch" href="/assets/js/9.0e657c2a.js">
+    <link rel="preload" href="/assets/css/0.styles.abfd12c2.css" as="style"><link rel="preload" href="/assets/js/app.d96e6d57.js" as="script"><link rel="preload" href="/assets/js/2.591daaf2.js" as="script"><link rel="preload" href="/assets/js/15.d66f1096.js" as="script"><link rel="prefetch" href="/assets/js/10.475d8cb3.js"><link rel="prefetch" href="/assets/js/11.ac74d8f6.js"><link rel="prefetch" href="/assets/js/12.ad7cc64c.js"><link rel="prefetch" href="/assets/js/13.9d5d45ca.js"><link rel="prefetch" href="/assets/js/14.c8abe1b6.js"><link rel="prefetch" href="/assets/js/16.ac6d2459.js"><link rel="prefetch" href="/assets/js/17.ae7ccb87.js"><link rel="prefetch" href="/assets/js/3.3ae9385c.js"><link rel="prefetch" href="/assets/js/4.3b6a7e49.js"><link rel="prefetch" href="/assets/js/5.952ba3c1.js"><link rel="prefetch" href="/assets/js/6.3af7207d.js"><link rel="prefetch" href="/assets/js/7.79f9983a.js"><link rel="prefetch" href="/assets/js/8.6c22e8b4.js"><link rel="prefetch" href="/assets/js/9.7e7aaf2f.js">
     <link rel="stylesheet" href="/assets/css/0.styles.abfd12c2.css">
   </head>
   <body>
@@ -32,7 +32,7 @@ function out() {
 }
 </code></pre></div><ul><li>window对象的内置属性，比如window.location,window.name等等</li></ul> <p>全局作用域的弊端：会污染全局命名空间，容易命名冲突</p> <h2 id="函数作用域"><a href="#函数作用域" class="header-anchor">#</a> 函数作用域</h2> <p>函数作用域是指声明在函数体内的变量，该作用域变量只能在函数体范围内能访问得到。<br>
 作用域是分层的，在嵌套函数中分为外层作用域和内层作用域，其中内作用域可以访问外作用域的变量，反之却不行。</p> <p>另外条件语句块或是循环语句块，例如if,switch,for in等等，在执行语句块(&quot;{}&quot;中的语句)时，不会额外创建一个作用域，而是将变量保存在已存在的作用域中。</p> <h2 id="块级作用域"><a href="#块级作用域" class="header-anchor">#</a> 块级作用域</h2> <p>块级作用域是由let和const声明的变量，该变量只能在<code>{代码体}</code>中访问。<br>
-块级作用域不可重复声明，否写会报错，并且声明时，不会像var置顶。</p> <h2 id="作用域链"><a href="#作用域链" class="header-anchor">#</a> 作用域链</h2> <p>在一个函数体内引用一个变量，但是该变量未在函数体中声明，于是就像父级查询，一层层往上，直到查询到为止，没查到就报错，这种一层层往上查询的关系就叫做作用域链。</p> <p>函数必定对应着自己的一个作用域链，这个作用域链是在函数声明时确定的，函数地运行在声明时的作用域链上。</p> <div class="language- extra-class"><pre class="language-text"><code>var value = 1;
+块级作用域不可重复声明，否则会报错，并且声明时，不会像var置顶。</p> <h2 id="作用域链"><a href="#作用域链" class="header-anchor">#</a> 作用域链</h2> <p>在一个函数体内引用一个变量，但是该变量未在函数体中声明，于是就像父级查询，一层层往上，直到查询到为止，没查到就报错，这种一层层往上查询的关系就叫做作用域链。</p> <p>函数必定对应着自己的一个作用域链，这个作用域链是在函数声明时确定的，函数运行在声明时的作用域链上。</p> <div class="language- extra-class"><pre class="language-text"><code>var value = 1;
 function fun() {
     console.log(value)  //1
 }
@@ -54,7 +54,7 @@ function fun1() {
 
 fun1()()
 </code></pre></div><p>为什么需要闭包?<br>
-局部变量无法共享和长久的保存，而全局变量可能造成变量污染，所以我们需要有一种机制可以长久的保存变量又不会造成全局污染。</p> <p>特点：</p> <ul><li>占用更多内存</li> <li>不容易被释放</li></ul> <p>使用闭包的注意点：</p> <ol><li>由于闭包会使得函数中的变量都被保存在内存中，内存消耗很大，所以不能滥用闭包，否则很可能导致内存泄露。解决方法是在退出函数前将不使用的局部变量全部删除。</li> <li>闭包会在父函数外部改变父函数内部变量的值。</li></ol></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">8/16/2020, 9:51:52 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+局部变量无法共享和长久的保存，而全局变量可能造成变量污染，所以我们需要有一种机制可以长久的保存变量又不会造成全局污染。</p> <p>特点：</p> <ul><li>占用更多内存</li> <li>不容易被释放</li></ul> <p>使用闭包的注意点：</p> <ol><li>由于闭包会使得函数中的变量都被保存在内存中，内存消耗很大，所以不能滥用闭包，否则很可能导致内存泄露。解决方法是在退出函数前将不使用的局部变量全部删除。</li> <li>闭包会在父函数外部改变父函数内部变量的值。</li></ol></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">8/24/2020, 8:10:12 PM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
       ←
       <a href="/front/prototype.html" class="prev">
         原型和原型链
@@ -63,6 +63,6 @@ fun1()()
       </a>
       →
     </span></p></div> </main></div><div class="global-ui"></div></div>
-    <script src="/assets/js/app.84307a97.js" defer></script><script src="/assets/js/2.591daaf2.js" defer></script><script src="/assets/js/15.c93b5974.js" defer></script>
+    <script src="/assets/js/app.d96e6d57.js" defer></script><script src="/assets/js/2.591daaf2.js" defer></script><script src="/assets/js/15.d66f1096.js" defer></script>
   </body>
 </html>
