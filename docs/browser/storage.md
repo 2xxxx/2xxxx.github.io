@@ -50,16 +50,6 @@ HTTP1.0使用`Last-Modified` 和 `If-Modified-Since`,HTTP1.1使用的`Etag` 和 
 不一定。因为Etag中包含Last-Modified,Last-Modified由mtime组成，当编辑文件但没修改内容时，mtime也会改变，造成Etag也改变。
 mtime: modified time 文件内容改变的事件戳。
 
-
-
-## 服务器缓存
-### CDN缓存
-
-### Combo服务
-
-## HTML5缓存思路
-### 离线存储manifest
-
 ## 浏览器存储  
 |           | cookie |  localstorage  | sessionStorage |
 |-----------|---------|----------------|---------------|
@@ -88,6 +78,19 @@ ps:考虑到安全，应该使用session或token.
 **session**:记录用户的会话，存储在服务端，根据session id来确认用户身份。但是当访问增多时会占用服务器性能，session用户在20分钟内没操作的话就会删除。但是使用session也需要依赖cookie，sessionId会存储在cookie中，如果cookie被禁用，则会将seesionId写在URL中。
 
 
-### localStorage
+### localStorage 和 sessionStorage
+两者提供了统一的API来访问和设置数据：  
+1. clear。清除所有存储数据  
+2. getItem。接收参数key,获取key对应的键值对 
+3. removeItem。接收参数key,删除key对应的键值对  
+4. setItem。接收key和value,如果不存在key则添加，存在就更新   
+5. key。接收整数索引，返回对应下标的键值对的key
+```
+localStorage.setItem('order', '123');
+console.log(localStorage.key(0)); //order
+console.log(localStorage.getItem('order'))//123
+console.log(localStorage.order) //123
+localStorage.removeItem('order')
+localStorage.clear()
 
-### sessionStorage
+```

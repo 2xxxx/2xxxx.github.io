@@ -8,8 +8,8 @@ ps:尽量在事件冒泡阶段绑定回调函数处理事件，因为在捕获�
 
 ### 事件绑定  
 dom0级事件绑定  
-优点： 兼容性好，都能绑定。
-缺点：只能绑冒泡阶段；不能绑多个函数，存在覆盖问题；事件对象的获取存在兼容性。
+优点：兼容性好，都能绑定。  
+缺点：只能绑冒泡阶段；不能绑多个函数，存在覆盖问题；事件对象的获取存在兼容性。  
 绑定方式有两种：一种是onclick=function(){},一种是标签内写onclick事件。
 ```
 <input id="input" type="text" onclick="alert(111)" />
@@ -22,10 +22,10 @@ document.getElementById('input').onclick =function() {
 ```
 
 dom2级事件绑定  
-优点： 既可以绑捕获阶段，也可以绑冒泡阶段；可以绑多个函数。
+优点： 既可以绑捕获阶段，也可以绑冒泡阶段；可以绑多个函数。  
 缺点： IE和非IE绑定时要使用不同的dom2级事件方法；且this的含义不一样；事件对象的获取存在兼容性。  
 绑定方式：监听方法，addEventListener()和removeEventListener()这两个原生方法用来添加和移除事件。  
-第三个参数如果为true则表示在捕获阶段调用，为false在冒泡阶段调用，默认为false. 
+第三个参数如果为true则表示在捕获阶段调用，为false在冒泡阶段调用，默认为false.   
 dom0级和dom2级的事件可以同时存在 
 ```
 <input id="input" type="text" onclick="alert(111)" />
