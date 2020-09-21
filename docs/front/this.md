@@ -22,7 +22,7 @@ function fun () {
 fun()
 ```
 2. 在构造函数中，当函数中调用了this,this指向当前函数  
-```
+```js
 var fun = function() {
     this.value = 3
     console.log(this) //fun {value: 3}
@@ -31,7 +31,7 @@ var test = new fun()
 console.log(test.value) //3
 ```
 3. 在箭头函数中，没有this的绑定，如果箭头函数的外部有非箭头函数包裹它，则取最近的非箭头函数中this指向；如果没有包裹就指向window  
-```
+```js
 var fun = function outfun() {
     console.log('外层',this); //外层 outfun{}
     var infun = ()=> {console.log('内层', this)}; //内层 outfun{}
@@ -50,7 +50,7 @@ var fun = ()=> {console.log('内层', this)}; //内层 window
 * new 实例化
 * call,apply,bind
 
-```
+```js
 var test = {
     num: 123,
     outfun: function() {
@@ -64,7 +64,7 @@ var test = {
 test.outfun()
 ```  
 修改方法：  
-```  
+```  js
 //箭头函数  
 var test = {
     num: 123,
@@ -113,7 +113,7 @@ var test = {
 test.outfun()  
 ```
 new实例改变指向  
-```
+```js
 var fun = function outfun() {
     console.log('外层',this); 
     var infun = ()=> {console.log('内层', this)}; 

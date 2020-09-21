@@ -11,7 +11,7 @@ dom0级事件绑定
 优点：兼容性好，都能绑定。  
 缺点：只能绑冒泡阶段；不能绑多个函数，存在覆盖问题；事件对象的获取存在兼容性。  
 绑定方式有两种：一种是onclick=function(){},一种是标签内写onclick事件。
-```
+```js
 <input id="input" type="text" onclick="alert(111)" />
 
 document.getElementById('input').onclick =function() {
@@ -27,7 +27,7 @@ dom2级事件绑定
 绑定方式：监听方法，addEventListener()和removeEventListener()这两个原生方法用来添加和移除事件。  
 第三个参数如果为true则表示在捕获阶段调用，为false在冒泡阶段调用，默认为false.   
 dom0级和dom2级的事件可以同时存在 
-```
+```js
 <input id="input" type="text" onclick="alert(111)" />
 
 document.getElementById('input').onclick =function() {
@@ -53,7 +53,7 @@ document.getElementById('input').attachEvent('onclick',function() {
 
 IE与标准浏览器下捕获事件和冒泡事件的顺序问题
 捕获先执行，冒泡后执行。同在一个执行阶段则先绑定先执行
-```
+```js
 var eventUtil = {};
 eventUtil.handler = function(obj, type, fun, isCapture) {
     let isCapture = !!isCapture;
@@ -74,7 +74,7 @@ eventUtil.handler = function(obj, type, fun, isCapture) {
 ```
 
 ### 事件对象
-```
+```js
 window.onload = function() {
     var a = document.getElementById('input');
     a.onclick= function(e) {
@@ -111,7 +111,7 @@ window.onload = function() {
 0级事件： `document.body.onclick = null`;  
 
 2级事件：  
-```
+```js
 var fun =function() {console.log(123)};
 wondow.onload = function() {
     document.body.onclick = function() {

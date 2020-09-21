@@ -1,6 +1,6 @@
 # 缓存与存储
 ## 浏览器缓存  
-缓存机制：客户端发送请求时先发给浏览器缓存，如果有缓存数据且生效，则返回200 from Cache（现在已区分disk和memory）和缓存数据，如果失效则携带缓存标识向服务器去请求，由服务起决定是否启用缓存，若启用则协商缓存生效返回304，客户端使用浏览器缓存资源，若缓存失效，服务器返回200和新数据，并将该数据及缓存规则标识在浏览器缓存中.
+缓存机制：客户端发送请求时先发给浏览器缓存，如果有缓存数据且生效，则返回200 from Cache（现在已区分disk和memory）和缓存数据，如果失效则携带缓存标识向服务器去请求，由服务器决定是否启用缓存，若启用则协商缓存生效返回304，客户端使用浏览器缓存资源，若缓存失效，服务器返回200和新数据，并将该数据及缓存规则标识存在浏览器缓存中.
 
 缓存作用：
 * 减少网络带宽消耗
@@ -13,7 +13,7 @@
 **强缓存控制字段**  
 http1.0使用的是`Expires`,http1.1使用的`Cache-Control`.  
 
-`Expires`：响应头字段，值为服务器返回的请求结果到期时间，控制原理是将客户端时间与服务端返回的时间做对比，如果用户修改了本地时间，或时区不同则会发生误差，导致缓存失效。  
+`Expires`：响应头字段，值为服务器返回的请求结果到期时间，控制原理是将客户端时间与服务端返回的时间做对比，如果用户修改了本地时间，或时区不同发生误差，会导致缓存失效。  
 
 `Cache-Control`: 取值
 * public: 所有的内容都缓存(客户端和服务器)
@@ -62,8 +62,9 @@ mtime: modified time 文件内容改变的事件戳。
 服务端发送给客户端并保存在本地的一段数据，用于记录用户数据，验证用户身份，cookie是不能跨域的，客户端每次发送http请求都会携带cookie来验明身份。  
 **cookie设置**  
 1. 服务端设置，响应头的set-cookie字段可生成cookie信息保存在客户端  
-2. 客户端设置
-```
+2. 客户端设置  
+字段：name(cookie名称)，value(值)，domain(域名), path(页面路径)，expires/Max-Age(超时时间，设置一个时间，到达时间后失效，如果不设置则默认值为session,当浏览器关闭后失效)，size(cookie大小)，http(httponly属性，若为true，则不能通过document.cookie来访问cookie),secure(设置是否只能通过https来传递cookie)
+```js
 document.cookie = 'key = value'//js中设置cookie
 
 var time = new Date(+(new Date()) + 1000 * 120) ;
@@ -85,7 +86,7 @@ ps:考虑到安全，应该使用session或token.
 3. removeItem。接收参数key,删除key对应的键值对  
 4. setItem。接收key和value,如果不存在key则添加，存在就更新   
 5. key。接收整数索引，返回对应下标的键值对的key
-```
+```js
 localStorage.setItem('order', '123');
 console.log(localStorage.key(0)); //order
 console.log(localStorage.getItem('order'))//123

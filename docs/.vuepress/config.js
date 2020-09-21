@@ -27,7 +27,10 @@ module.exports = {
                     '/browser/crossDomain.md',
                     '/browser/storage.md',
                     '/browser/render.md',
-                    '/browser/eventLoop.md'
+                    '/browser/eventLoop.md',
+                    '/browser/safety.md',
+                    '/browser/recycle.md'
+                    
                 ]
             }, {
                 title: '网络基础',
@@ -37,6 +40,19 @@ module.exports = {
                     '/network/DNS.md',
                     '/network/TCPandUDP.md',
                     '/network/http.md'
+                ]
+            }, {
+                title: '项目和业务',
+                children: [
+                    '/project/',
+                    '/project/webpack.md',
+                    '/project/optimize.md'
+                ]
+            }, {
+                title: '前端框架',
+                children: [
+                    '/frame/',
+                    '/frame/vue.md'
                 ]
             }
 
