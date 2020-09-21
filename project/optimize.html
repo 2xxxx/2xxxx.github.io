@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>性能优化 | 学习笔记</title>
+    <meta name="generator" content="VuePress 1.5.3">
+    
+    <meta name="description" content="xcc的备忘笔记">
+    <link rel="preload" href="/assets/css/0.styles.abfd12c2.css" as="style"><link rel="preload" href="/assets/js/app.34fc8ccb.js" as="script"><link rel="preload" href="/assets/js/2.f6cac430.js" as="script"><link rel="preload" href="/assets/js/29.3d99059a.js" as="script"><link rel="prefetch" href="/assets/js/10.9e350fd5.js"><link rel="prefetch" href="/assets/js/11.3e7f150a.js"><link rel="prefetch" href="/assets/js/12.246acfd5.js"><link rel="prefetch" href="/assets/js/13.dc65eca0.js"><link rel="prefetch" href="/assets/js/14.d1564ab1.js"><link rel="prefetch" href="/assets/js/15.68d21866.js"><link rel="prefetch" href="/assets/js/16.0247a9c7.js"><link rel="prefetch" href="/assets/js/17.5080048a.js"><link rel="prefetch" href="/assets/js/18.e824ab33.js"><link rel="prefetch" href="/assets/js/19.6dcea4f4.js"><link rel="prefetch" href="/assets/js/20.2df51597.js"><link rel="prefetch" href="/assets/js/21.6fa8143d.js"><link rel="prefetch" href="/assets/js/22.07ecf39d.js"><link rel="prefetch" href="/assets/js/23.1beb4da4.js"><link rel="prefetch" href="/assets/js/24.90c12f39.js"><link rel="prefetch" href="/assets/js/25.31ff9110.js"><link rel="prefetch" href="/assets/js/26.cc5fb724.js"><link rel="prefetch" href="/assets/js/27.b43bef45.js"><link rel="prefetch" href="/assets/js/28.e9bb89fb.js"><link rel="prefetch" href="/assets/js/3.a51774e3.js"><link rel="prefetch" href="/assets/js/30.81860bc5.js"><link rel="prefetch" href="/assets/js/4.3b6a7e49.js"><link rel="prefetch" href="/assets/js/5.bc6e1aa4.js"><link rel="prefetch" href="/assets/js/6.569a4170.js"><link rel="prefetch" href="/assets/js/7.6d77f350.js"><link rel="prefetch" href="/assets/js/8.409c27ea.js"><link rel="prefetch" href="/assets/js/9.50a845cf.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.abfd12c2.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">学习笔记</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/front/" class="nav-link">
+  笔记
+</a></div><div class="nav-item"><a href="https://github.com/2xxxx" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/front/" class="nav-link">
+  笔记
+</a></div><div class="nav-item"><a href="https://github.com/2xxxx" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Github
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>JavaScript基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>浏览器基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>网络基础</span> <span class="arrow right"></span></p> <!----></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading open"><span>项目和业务</span> <span class="arrow down"></span></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/project/" aria-current="page" class="sidebar-link">项目构建</a></li><li><a href="/project/webpack.html" class="sidebar-link">webpack</a></li><li><a href="/project/optimize.html" aria-current="page" class="active sidebar-link">性能优化</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/project/optimize.html#加载优化" class="sidebar-link">加载优化</a></li><li class="sidebar-sub-header"><a href="/project/optimize.html#执行优化" class="sidebar-link">执行优化</a></li><li class="sidebar-sub-header"><a href="/project/optimize.html#渲染优化" class="sidebar-link">渲染优化</a></li><li class="sidebar-sub-header"><a href="/project/optimize.html#样式优化" class="sidebar-link">样式优化</a></li><li class="sidebar-sub-header"><a href="/project/optimize.html#脚本优化" class="sidebar-link">脚本优化</a></li></ul></li></ul></section></li><li><section class="sidebar-group collapsable depth-0"><p class="sidebar-heading"><span>前端框架</span> <span class="arrow right"></span></p> <!----></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><h1 id="性能优化"><a href="#性能优化" class="header-anchor">#</a> 性能优化</h1> <h2 id="加载优化"><a href="#加载优化" class="header-anchor">#</a> 加载优化</h2> <p>加载过程最为耗时，可能会占到总耗时的80%的时间，是优化的重点。
+<strong>减少http请求个数</strong><br>
+web前端80%的时间花在请求图片、脚本、样式等资源文件上。首次加载同时请求数不能超过4个，减少http请求个数的主要途径有：</p> <ol><li>合并JS/CSS文件。基于NodeJs的文件合并工具，将脚本合并成一个文件。</li> <li>使用CSS Sprite将图片合并成一个文件，通过background-image和background-position来控制显示。</li></ol> <p><strong>缓存资源</strong><br>
+使用缓存可减少请求数。</p> <ol><li>DNS缓存。用户输入URL后，查询域名对应的IP一般需要20~120ms。基于性能考虑，ISP、局域网、操作系统、浏览器都会有DNS缓存机制。</li> <li>缓存响应结果(Ajax请求)。http头添加Expires或Cache-Control字段判断缓存是否过期或是否存在，还有Last-Modified和Etag判断资源是否有更改。</li> <li>使用外联的样式和脚本。外部的JavaScript和CSS文件可以被浏览器缓存，在不同页面复用，可以减小页面大小。</li></ol> <p><strong>压缩代码</strong><br>
+减少资源大小可以加快网页显示速度。</p> <ol><li>压缩JavaScript和CSS。移除(注释、空格、空行等)非功能性字符，有大量前端优化工具可以实现，webpack等构建工具内有配套插件。</li> <li>启用Gzip。绝大多数浏览器支持Gzip解码，Gzip压缩可以减少70%的响应大小，可以有效缩短响应时间。ps:图片和PDF文件不要用，因为它们本身已经压缩过了。</li></ol> <p><strong>无阻塞</strong><br>
+样式放头部，脚本放底部。</p> <ol><li>把脚本放在页面底部。浏览器下载脚本时，会阻塞其他资源的下载，即使是不同域名的资源。倘若某些场景无法将脚本放到底部，可以<strong>异步加载js</strong>，这样渲染引擎一遇到该命令就会开始下载外部脚本，但是不会等它下载和执行，而是继续执行后续命令，方法是在<code>&lt;script&gt;</code>标签中添加<code>defer</code>属性或是<code>async</code>属性。不同的是：<br>
+async会在脚本加载完可用之时立即执行，渲染引擎会中断渲染，待执行完后继续渲染，而defer要等到DOM加载完毕，其他脚本生成后再执行。如果有多个脚本，设置了defer属性的脚本会按顺序执行，async不能确保。defer执行在window.onload之前，会阻止DOMContentLoaded事件，直至脚本被加载并解析完成后在触发该事件。</li> <li>对于样式，使用<code>link</code>代替<code>@import</code>。对于IE一些版本，@import 相当于放在页面底部，应该在头部用link引入样式。</li></ol> <p><strong>首屏加载</strong><br>
+首屏快速显示可以提升用户对页面速度的感知。</p> <ol><li>延迟加载。除了页面初始加载所必须的内容，其他非首屏显示的数据、样式、脚本、图片和一些用户交互时才显示的内容都可以延迟加载。</li></ol> <p><strong>按需加载</strong></p> <ol><li>懒加载</li> <li>滚屏加载</li> <li>Media Query加载</li></ol> <p><strong>预加载</strong><br>
+利用浏览器空闲时间请求将来要用的资源。预加载方式：</p> <ol><li>无条件预先加载：页面加载完(load)后,马上获取其他资源</li> <li>有条件预先加载： 根据用户行为预判用户去向，预载相关资源。</li></ol> <p><strong>压缩图像</strong></p> <p><strong>减少cookie</strong><br>
+cookie通过http头在服务器与浏览器之间传送，会影响响应速度。</p> <ol><li>静态资源域名不使用cookie</li> <li>去除不必要的cookie</li> <li>尽量压缩cookie大小</li> <li>设置cookie的domain级别</li> <li>设置合适的过期时间</li></ol> <p><strong>避免重定向</strong><br>
+重定向会影响加载速度。客户端收到重定向的回复后，会根据响应头中的Location地址再次发送请求。</p> <h2 id="执行优化"><a href="#执行优化" class="header-anchor">#</a> 执行优化</h2> <p>执行处理不当会阻塞页面加载和渲染<br> <strong>css写在头部，js写在尾部</strong></p> <p><strong>避免img.iframe等的src为空</strong><br>
+空的src会导致重新加载当前页面，影响速度和效率</p> <p><strong>尽量避免重置图像大小</strong><br>
+重置大小会应发图像的重绘</p> <p><strong>图像尽量避免使用DataURL</strong><br>
+DataURL图像没有使用图像的压缩算法，文件会变大，并且要解码后再渲染，加载慢耗时长</p> <h2 id="渲染优化"><a href="#渲染优化" class="header-anchor">#</a> 渲染优化</h2> <p><strong>设置viewport</strong><br>
+HTML的viewport可加速页面渲染</p> <p><strong>减少DOM节点</strong><br>
+DOM节点太多会影响页面渲染,js的DOM操作也更慢。<br> <strong>优化动画</strong><br>
+尽量使用CSS3动画。<br>
+合理使用requestAnimationFrame动画代替setTimeout</p> <p><strong>优化高频事件</strong></p> <ol><li>函数防抖和节流</li> <li>减少重绘次数</li></ol> <p><strong>GPU加速</strong><br>
+使用某些html5标签和css3属性会触发GPU渲染，移动端需合理使用(增加耗电)</p> <ul><li>html标签：video、canvas、webgl</li> <li>css属性： opacity、transform、transition</li></ul> <h2 id="样式优化"><a href="#样式优化" class="header-anchor">#</a> 样式优化</h2> <ol><li>避免在html中写style</li> <li>避免css表达式。表达式的执行需要跳出css树的渲染</li> <li>移除css空规则。会增加css文件大小</li> <li>正确使用display。会影响页面渲染</li></ol> <ul><li><code>display:none</code>时，渲染树不会渲染该节点，当重新显示时会引起重排</li> <li><code>display:inline</code>时，后面不要再设置float、margin、padding、width和height</li> <li><code>disply:inline-block</code>时，后面不要再设置float</li> <li><code>display:block时</code>，后面不再设置vertical-align</li> <li><code>display:table-*</code>时，后面不再设置float和margin</li></ul> <ol start="5"><li>不滥用float。float在渲染时计算量比较大</li> <li>不滥用web字体。需要下载、解析、重绘</li> <li>不声明过多的font-size。会影响css树的效率</li> <li>考虑到浏览器的兼容和性能，值为0时不带单位</li> <li>标准化浏览器前缀</li> <li>避免使用高级选择符。执行耗时长且不易读懂</li></ol> <h2 id="脚本优化"><a href="#脚本优化" class="header-anchor">#</a> 脚本优化</h2> <p><strong>减少重绘和回流</strong><br>
+重绘与回流的<a href="/browser/render.html">优化方法</a></p> <p><strong>尽量使用事件代理</strong></p></div> <footer class="page-edit"><!----> <div class="last-updated"><span class="prefix">Last Updated:</span> <span class="time">9/21/2020, 9:55:36 AM</span></div></footer> <div class="page-nav"><p class="inner"><span class="prev">
+      ←
+      <a href="/project/webpack.html" class="prev">
+        webpack
+      </a></span> <span class="next"><a href="/frame/">
+        框架架构
+      </a>
+      →
+    </span></p></div> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.34fc8ccb.js" defer></script><script src="/assets/js/2.f6cac430.js" defer></script><script src="/assets/js/29.3d99059a.js" defer></script>
+  </body>
+</html>
