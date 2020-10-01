@@ -54,6 +54,11 @@ module.exports = {
                     '/frame/',
                     '/frame/vue.md'
                 ]
+            }, {
+                title: '数据结构',
+                children: [
+                    '/dataStruct/'
+                ]
             }
 
         ],

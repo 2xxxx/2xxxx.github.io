@@ -77,7 +77,7 @@ vue是一个mvvm结构的框架。核心思想主要是组件化和数据驱动�
         },
         notify: function() {
             subs.forEach(function(sub) {
-                sun.update();
+                sub.update();
             })
         }
     }

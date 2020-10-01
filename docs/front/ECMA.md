@@ -221,7 +221,34 @@ Promise.all([p1,p2]).then(res => {
     console.log('失败',err)
 })
 ```  
-上例中任何一个promise实例任何一个执行失败都会报错，报错信息为失败的promise实例返回的错误信息  
+上例中任何一个promise实例任何一个执行失败都会报错，报错信息为失败的promise实例返回的错误信息   
+手写promise.all:  
+```js
+function promiseAll(promises) {
+    return new Promise(function (resolve, reject) {
+        if(!Array.isArray(promises)) {
+            return reject(new TypeError('arguments must be an array'));
+        }
+        let resolvedCount = 0,promiseNum = prmises.length;
+        let resolvedValues = new Array(promiseNum);
+        for(let i = 0; i < promiseNum; i++) {
+           Promise.reolve(promises[i]).then(
+                (value) => {
+                    resolvedCount++;
+                    resolvedValues[i] == value;
+                    if(resolvedCount === promiseNum) {
+                        return resolve(resolvedValues)
+                    }
+                },
+                (reson) => {
+                    return reject(reson)
+                }
+            )
+        }
+        
+    })
+}
+```
 
 **promise.race()**  
 用法与promise.all()类似，不同的是适用场景，promise.race()是只要其中的promise实例有结果，无论成功或失败，promise.race()的状态就会改变，返回单个结果  
@@ -317,7 +344,16 @@ console.log(target.a) //1
 * `deleteProperty(target,propKey)`, 拦截`delete proxy[propKey]`,返回布尔值  
 * `ownKeys(target)`,拦截`Object.getOwnPropertyNames(proxy)`、`Object.getOwnPropertySymbols(proxy)`、`Object.keys(proxy)`,返回一个数组（目标对象所有自身属性的属性名）  
 * `apply(target,object,args)`,拦截Proxy实例,并将其作为函数调用  
-* `construct(target,args)`,拦截Proxy实例,并将其作为构造函数调用 
+* `construct(target,args)`,拦截Proxy实例,并将其作为构造函数调用   
+
+**扩展**  
+在最新的Vue3.0中，将用proxy代替Object.defineProperty()进行数据劫持，实现双向绑定。  
+proxy的优势： 
+1. 能够监听到数组和对象的变动。   
+原因： Object.defineProperty只能劫持对象的属性，需要遍历对象的每个属性，当对象新增属性时，需要重新遍历对象，对新增属性进行劫持。而Proxy是直接代理对象，proxy可以直接通过set方法拦截到对象属性和数组的设置。  
+ps:vue2.0中通过vm.$set实现对数组和对象的响应，当target是数组时，调用重写的splice方法更新数组，当target是对象时，如果不是响应式对象或者属性key本就存在就直接赋值，否则调用defineReactive给数据添加getter和setter  
+  
+
 
 
 

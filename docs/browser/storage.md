@@ -70,7 +70,7 @@ document.cookie = 'key = value'//js中设置cookie
 var time = new Date(+(new Date()) + 1000 * 120) ;
 document.cookie = `name = xxx;expires = $(time.toGMTString())`//设置cookie过期时间expires,如果要删除cookie，就设置过去的时间
 
-/*domain 只有当cookie的domain和当前域名匹配时才能访问到cookie,当网址不止一个域名时，比如a.example.com和b.example.com如果想共享cookie,那么domain要设置成example.com，path路径要设置为/ */
+/*原则上cookie不能跨域，如果想实现跨域，就得设置域或者路径。domain 只有当cookie的domain和当前域名匹配时才能访问到cookie,当网址不止一个域名时，比如a.example.com和b.example.com如果想共享cookie,那么domain要设置成example.com，path路径要设置为/ */
 
 var t = new Date( +(new Date()) + 1000 * 120 );
 document.cookie = `name=monsterooo;expires=${t.toLocaleTimeString()}; domain=.example.com; path=/`;

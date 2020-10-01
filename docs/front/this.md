@@ -12,7 +12,21 @@ function fun() {
 fun()
 ```
 
-## 函数上下文  
+## 函数上下文    
+函数声明的几种方式：  
+```js
+// 1.函数声明
+function fun () {
+    console.log(this)//window
+}
+// 2.函数表达式 
+var fun = function() {
+    this.value = 3
+    console.log(this) //fun {value: 3}
+}
+// 3.function构造器  
+var fun = new Function()
+```
 函数上下文中主要分为三种情况：  
 1. 在普通函数中，非严格模式下this指向window,严格模式下,this指向undefined  
 ```js
@@ -130,14 +144,96 @@ fun()
 
 **call** 
 语法：fun.call(thisArg, arg1, arg2,....)  
-使用：第一个参数是this的指向，传参方式是以参数列表的型式  
+使用：第一个参数是this的指向，传参方式是以参数列表的型式   
+实现：  
+```js
+Function.prototype.ownCall = function(context, ...args) {
+    if(typeof context === 'number') {
+        context = Number();
+    }else if(typeof context === 'string') {
+        context = String();
+    }else if(typeof context === 'boolean') {
+        context = Boolean();
+    }else {
+       context = context || window; 
+    }
+    //this为要执行的方法  
+    context.fn = this;
+    const result =args.length > 0 ? context.fn(...args) : context.fn();
+    delete context.fn
+    return result
+}
+```
 
 
 **apply**  
 语法：fun.call(thisArg, [arg1, arg2 ,...])  
-使用：第一个参数是this的指向，传参方式是数组的型式  
+使用：第一个参数是this的指向，传参方式是数组的型式    
+实现： 
+```js  
+Function.prototype.ownApply = function(context, args) {
+      if(typeof context === 'number') {
+        context = Number();
+    }else if(typeof context === 'string') {
+        context = String();
+    }else if(typeof context === 'boolean') {
+        context = Boolean();
+    }else {
+       context = context || window; 
+    }  
+    context.fn = this;
+    let result= args.length > 0 ? context.fn(...args) : context.fn();
+    
+    delete context.fn
+    return result
+    
+    
+
+}
+```
 
 ps:thisArg为null或undefined时，非严格模式下，this会指向window,严格模式下，this会指向null或undefined。当thisArg的值是基本类型number、string、boolean时，this指向变为基本类型的包装对象（如Number()等等）  
 
 **bind**  
 bind与call,apply不一样，bind()会创建一个新的函数，在bind被调用时，新函数中的this是指向第一个参数thisArg.bind是用call和apply实现的  
+```js
+Function.prototype.ownBind = function(context) {
+    if(typeof this != 'function') {
+        throw new TypeError(this + 'must be a action');
+    }
+      if(typeof context === 'number') {
+        context = Number();
+    }else if(typeof context === 'string') {
+        context = String();
+    }else if(typeof context === 'boolean') {
+        context = Boolean();
+    }else {
+        //深拷贝，防止变量污染
+       context = JSON.parse(JSON.stringify(context)) || window; 
+    }
+    //原生
+    // context.fn = this;
+    // const args = Array.from(arguments).slice(1);
+    // //bind返回一个绑定函数
+    // return function() {
+    //     //对bind函数的实参和返回的绑定函数的实参进行参数合并，调用时传入。  
+    //     const allArgs = args.concat(Array.from(arguments));
+    //     return allArgs.length > 0 ? context.fn(...allArgs) : context.fn();
+    // }
+
+    //call或apply
+    let self = this;
+    let args = [].slice.call(arguments, 1) //end省略
+    return function bound() {
+        //参数合并
+        var boundArgs = [].slice.call(arguments); //类数组转换成数组
+        var finalArgs = args.concat(boundArgs);  
+        //判断是否被当做构造函数使用
+        if(this instanceof bound) {
+            return self.apply(this, finalArgs)
+        }
+        return self.apply(context, finalArgs)
+    }
+  
+}
+```
