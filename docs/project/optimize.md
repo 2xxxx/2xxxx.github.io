@@ -107,9 +107,89 @@ DOM节点太多会影响页面渲染,js的DOM操作也更慢。
 
 **尽量使用事件代理**    
 
-## 具体业务优化  
+## 具体业务优化    
+**指标**  
+* 白屏时间：从浏览器输入地址并回车后到页面开始有内容的时间；  
+计算：浏览器开始渲染<body>标签或者解析完<head>标签时就是页面白屏结束的时间。  
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>白屏</title>
+  <script type="text/javascript">
+    // 不兼容performance.timing 的浏览器，如IE8
+    window.pageStartTime = Date.now();
+  </script>
+  <!-- 页面 CSS 资源 -->
+  <link rel="stylesheet" href="common.css">
+  <script type="text/javascript">
+    // 白屏时间结束点
+    window.firstPaint = Date.now();
+  </script>
+</head>
+<body>
+  <!-- 页面内容 -->
+</body>
+</html>
+```
+```js 
+白屏时间 = performance.timing.responseStart - performance.timing.navigationStart;  
+//不使用performance API时
+白屏时间 = firstPaint - pageStartTime
+```
+* 首屏时间： 从浏览器输入地址并回车后到首屏页面内容渲染完毕的时间；  
+计算方法：  
+1. 首屏模块标签标记法  
+在HTML文档中对应首屏内容的标签结束位置和内联的js代码处记录时间戳。适用不需要获取数据以及不需要考虑图片等资源加载的情况。  
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>首屏</title>
+  <script type="text/javascript">
+    window.pageStartTime = Date.now();
+  </script>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="page.css">
+</head>
+<body>
+  <!-- 首屏可见模块1 -->
+  <div class="module-1"></div>
+  <!-- 首屏可见模块2 -->
+  <div class="module-2"></div>
+  <script type="text/javascript">
+    window.firstScreen = Date.now();
+  </script>
+  <!-- 首屏不可见模块3 -->
+  <div class="module-3"></div>
+    <!-- 首屏不可见模块4 -->
+  <div class="module-4"></div>
+</body>
+</html>
+```
+```js
+首屏时间 = firstScreen - performance.timing.navigationStart;
+```
 
-### 首屏优化  
+2. 统计首屏内加载最慢的图片的时间    
+通常首屏加载最慢的就是图片资源，因此可以把首屏加载最慢的图片的时间当做首屏时间。  
+计算方法：遍历首屏内所有的图片标签，监听图片标签的onload时间，计算出所有加载时间的最大值，并用这个最大值减去navigationStart就可获得首屏时间。(加载最慢的图片的时间点 - performance.timing.navigationStart)
+
+3. 自定义首屏内容计算法
+
+**Performance API**  
+该接口可以获取到当前页面与性能相关的信息   
+
+
+
+### 首屏优化    
+1. 图片懒加载和尺寸控制  
+可以使用vue-lazyload插件来实现图片懒加载,也可以先把背景替换成同一张占位图，这样就只用请求一次，当图片出现在浏览器可视区域时，才去请求图片的真实路径。  
+尺寸控制，CDN可对图片尺寸做压缩处理，webp格式图片比对应的jpg要小三分之一 
+
+
 
 
   

@@ -342,7 +342,7 @@
 * `space-around`：垂直方向，**每根**轴线两侧的间隔相等(轴线之间的间隔比轴线与边框的间隔大一倍)  
 * `stretch`(默认值):  轴线占满整个交叉轴  
 
-## 项目属性  
+### 项目属性  
 1. order： int类型，定义项目的排列顺序，数值越小，排列越靠前，默认为0，可为负数    
 
 2. flex-grow: 定义项目的放大比例，默认为0(不放大)  
@@ -357,4 +357,125 @@
 
 6. align-self: 允许单个项目和其他项目有不一样的对齐方式，可覆盖align-items。默认值为auto(继承父元素的align-items属性，如果没有父元素，等同于stretch)  
 取值： 在align-items的取值上增加auto
+
+## Grid布局  
+Grid可以指定容器内部多个项目(子元素)的位置，将容器划分成“行”和“列”，产生单元格，然后指定项目在哪个单元格。  
+```html
+<div>
+    <div><p>1</p></div>
+    <div><p>2</p></div>
+    <div><p>3</p></div>
+</div>
+```  
+如上例，最外层的div是容器，第二层的三个div是项目，由于p不是容器的顶层子元素，所以不能算项目，Grid布局只对项目生效。  
+ps:设为Grid的布局后，项目的`float`、display的`inline-block`和`tabel-cell`属性、`vertical-align`和`column-*`等将生效。  
+
+默认情况下，容器都是块级元素  
+```css
+div {
+    display:grid;
+}
+```  
+也可以设置成行内元素：  
+```css
+div {
+    display: inline-grid;
+}
+```  
+
+### 属性  
+1. grid-template-columns属性和grid-template-rows属性  
+该属性可以定义每列的宽度和每行的高度，用来划分容器的行和列。  
+```css
+/* 三行三列布局 */
+.container {
+    display: grid;
+    grid-template-columns: 100px 100px 100px;
+    grid-template-rows: 100px 100px 100px;
+}
+
+/* 百分比 */
+.container {
+    display: grid;
+    grid-template-columns: 33.33% 33.33% 33.33%;
+    grid-template-rows: 33.33% 33.33% 33.33%;
+}
+```  
+还可以使用关键字简写:  
+**repeat()**   
+接收两个参数，第一个是重复次数，第二个是需要重复的参数
+```css
+.container {
+    display: grid;
+    grid-template-columns: repeat(3, 33.33%);
+    grid-template-rows: repeat(3, 33.33%);
+}
+/* repeat还可以重复某种模式 */
+grid-template-columns: repeat(2, 100px 200px 300px);/*重复两遍，定义6列（100 200 300 100 200 300）*/
+```  
+
+**auto-fill**  
+在单元格(项目)大小固定的情况下，如果容器大小不确定，希望每一行或每一列容纳更多的项目，可以使用auto-fill自动填充。在占满当前行（列）后换行。  
+```css
+/* 每列宽100px,横向放置更多的项目 */
+.container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px)
+}
+```  
+
+**fr**  
+fr(fraction)是片段，用来表示比例关系，如果两列宽度分别为1fr和2fr,就表示后者是前者的两倍  
+```css
+.container {
+    display:grid;
+    grid-template-columns: 1fr 1fr;  /*两列相同*/  
+
+    /*也可以像素值与倍数混用*/  
+    grid-template-columns: 150px 1fr 2fr; /*第一列150px,第二列是第三列的一半*/
+}
+```  
+
+**minmax**  
+产生一个长度范围，它接受两个参数，最小值和最大值，长度在该范围中  
+```css 
+/* 第三列不小于100px,不大于1fr */
+grid-template-columns: 1fr 1fr minmax(100px, 1fr);
+```    
+
+**auto**  
+由浏览器决定长度  
+```css  
+/* 左右固定，中间自适应 */
+grid-template-columns: 100px auto 100px;
+```  
+
+**布局实例**  
+* 两栏式布局  
+```css
+.wrapper {
+    display: grid;
+    grid-template-columns: 30% 70%; /*左栏30%，右栏70%*/
+}
+```  
+
+* 十二网格布局  
+```css
+grid-template-columns: repeat(12, 1fr);
+```
+   
+2. grid-row-gap、grid-column-gap和grid-gap  
+`grid-row-gap`是设置行间距，`grid-column-gap`是设置列间距  
+```css
+.container {
+    grid-row-gap: 20px;
+    grid-column-gap:20px;
+}
+```  
+`grid-gap`是两者合并的写法  
+```css
+grid-gap: <grid-row-gap> <grid-column-gap>
+```  
+ps:最新标准，上述三个属性民可以省略grid  
+
 

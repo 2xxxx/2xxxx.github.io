@@ -8,13 +8,13 @@ vue是一个mvvm结构的框架。核心思想主要是组件化和数据驱动�
 
 ## vue的生命周期  
 总共8个，  
-创建前后(beforeCreate,created)：el和data都为初始化、  
+创建前后(beforeCreate,created)：el(Events&Lifecycle)和data都没初始化、  
 挂载前后(beforeMount,mounted)： data有初始化,el没有、  
-更新前后(beforeUpdate,updated)： 前（完成了el和data初始化，挂载虚拟dom），后（完成挂载，渲染），、  
+更新前后(beforeUpdate,updated)： 前（完成了el和data初始化，挂载虚拟dom），后（完成挂载，渲染）、  
 销毁前后(beforeDestroy,destroyed)  
 
 ## 双向绑定    
-原理: 采用数据劫持结合发布者-订阅者模式的方式，通过Object.defineProperty()来劫持各个属性的setter和getter,在数据变动是发布消息给订阅者，触发相应的监听回调。  
+原理: 采用数据劫持结合发布者-订阅者模式的方式，通过Object.defineProperty()来劫持各个属性的setter和getter,在数据变动时发布消息给订阅者，触发相应的监听回调。  
 
 流程：  
 1. 实现一个数据监听器Observer,能够对数据所有属性进行监听，如有变动可拿到最新值并且通知订阅者。  
@@ -229,6 +229,114 @@ history模式是通过调用window.history对象上的一系列方法来实现�
         }
     }
 ```
+
+
+### 计算属性  
+变量需要进行复杂的逻辑操作是，可使用计算属性，它可以像绑定普通property一样在模板中绑定。  
+通常我们可以将同一函数定义为方法methods，也可以定义为计算属性computed，两个方式的结果是一样的。但是不同的是，计算属性会**基于响应式依赖进行缓存**，也就是说，只有该属性依赖的响应式数据发生改变时，计算属性才会重新求值，否则计算属性就会回复上次缓存的值，不会再次执行函数。而方法methods是**每次调用时都会执行函数**。所以，当不需要缓存时，就用方法来代替计算属性。  
+提问，为什么计算属性要缓存呢？  
+为了节省计算开销，适用于计算量大或者修改频率低的情况。如果有一个计算属性要遍历庞大的数组且有大量计算，而其他计算属性又依赖于该属性时，没有缓存，会要多次执行该属性的getter。  
+
+计算属性的实现：  
+computed初始化、首次渲染、触发更新  
+过程：  
+* 首次渲染时实例化computeedWather并定义属性dirty: false,在render过程中求值并进行依赖收集  
+* 当computedWather订阅的响应式数据改变时，触发computedWatcher更新，修改dirty: true  
+* render函数执行时读取计算属性，发现dirty为true就重新求值，并更新页面视图。  
+```js
+//1.定义_computedWatchers。首先定义一个watcher空对象，挂在vm._computedWatchers上，用来存放vm实例的所有computedWather
+function initComputed(vm, computed) {
+    const watchers = vm._computedWathers = Object.create(null);
+    //遍历computed选项，依次定义
+    for(const key in computed) {
+        const getter = computed[key];
+        //2.实例化computedWather,为计算属性创建内部watcher
+        watchers[key] = new Wather(
+            vm,
+            getter || noop, 
+            noop,
+            computedWatcherOptions //{lazy:true},指定lazy属性，表示要实例化的是computedWatcher
+
+        )
+        //3.为计算属性定义getter
+        defineComputed(vm,key,userDef)
+    }
+}
+
+// 实例化computedWather
+class Watcher {
+    constructor(vm, expOrFn, cb, options) {
+        // options是{lazy: true}
+        if(options) {
+            this.lazy = !options.lazy
+        }
+        this.dirty = this.lazy //lazy watcher,初始为true
+        this.getter = expOrFn;
+        //lazy为true的话，不进行求值，直接返回undefined
+        this.value = this.lazy ? undefined : this.get();
+       
+    },
+     evaluate() {
+         this.value = this.get();
+         this.dirty = false;
+     },
+    depend() {
+        //对dep的响应式数据进行依赖收集，
+        let i = this.deps.length;
+        while(i--) {
+            this.deps[i].depend()
+        }
+    },
+    update() {
+        if(this.lazy) {
+            this.dirty = true; //dirty为true,表示要重新计算
+        }
+        queueWather(this); //加入异步更新队列，最终会执行render函数来生成vnode，同首次渲染一样，触发getter
+    }
+    
+}
+//wather对象
+// {
+//     xxx: Watcher {
+//         lazy: true,
+//         dirty: true,
+//         deps:[],
+//         getter: function() {
+//             return ...
+//         },
+//         value: undefined
+//     }
+// }
+
+// 定义计算属性getter
+function defineComputed(target, key, userDef) {
+    Object.defineProperty(target, key, {
+        get: function() {
+            const watcher = this._computedWathers && this.computedWathers[key];
+            if(watcher) {
+                if(watcher.dirty) {
+                    //dirty为true,执行get进行求值,并将dirty设置为false
+                    watcher.evaluate()
+                }
+                if(Dep.target) {
+                    watcher.depend()
+                }
+                return wather.value
+                
+            }
+
+        },
+        set: function() {
+            //进行更新
+        }
+
+    })
+}
+```  
+由上述可知，computedWather主要是修改dity属性为true,计算属性依赖的响应式数据a被会computedWatcher订阅，即数据a的dep会收集该computedWatcher，一旦发生变化，就会触发computedWather更新，dirty置为true,重新求值；若是依赖数据没有变化，则不会触发更新，dirty仍为false，render不会重新求值，这样就起到了缓存的作用
+
+
+
 
  
 

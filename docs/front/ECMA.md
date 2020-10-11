@@ -197,6 +197,32 @@ promise().then(res => {
 }).catch(err => {
     console.log('失败',err)
 })
+```  
+手写promise  
+```js
+function ownPromise() {
+    this.status = 'pending';
+    this.msg = '';
+    var process = arguments[0];
+    var that = this;
+    process(function() {
+        that.status = 'resolve';
+        that.msg = arguments[0];
+    },function() {
+        that.status = 'reject';
+        that.msg = arguments[0];
+    })
+    return this;
+}
+
+ownPromise.prototype.then = function() {
+    if(this.status === 'resolve') {
+        arguments[0](this.msg);
+    }
+    if(this.status === 'reject'&&arguments[1]) {
+        arguments[1](this.msg);
+    }
+}
 ```
 **promise.all()**  
 批量执行多个promise时使用，只有当promise.all内所有promise实例执行完毕，promise.all()的状态才会改变,成功返回一个数组  
