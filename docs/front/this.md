@@ -17,16 +17,20 @@ fun()
 ```js
 // 1.函数声明
 function fun () {
-    console.log(this)//window
+    console.log(this)
 }
 // 2.函数表达式 
 var fun = function() {
     this.value = 3
-    console.log(this) //fun {value: 3}
+    console.log(this) 
 }
 // 3.function构造器  
-var fun = new Function()
-```
+var fun = new Function(参数列表， 函数体) 
+//ps: Function构造函数使用字符串做为函数体，会阻止js引擎优化并带来一些问题，因此，不建议使用该方法
+//eg: var multiply = new Function("a", "b", "return a * b");
+```  
+函数声明会带来作用域提升，所以可在声明前调用函数；而函数表达式不会，它会创建一个闭包，它定义的函数继承当前的作用域，不会提升；而Function函数不会继承全局作用域以外的任何作用域，且定义的函数会被解析多次，构造函数被调用一次，函数体字符串也都要被解析一次
+
 函数上下文中主要分为三种情况：  
 1. 在普通函数中，非严格模式下this指向window,严格模式下,this指向undefined  
 ```js
@@ -199,7 +203,7 @@ bind与call,apply不一样，bind()会创建一个新的函数，在bind被调�
 ```js
 Function.prototype.ownBind = function(context) {
     if(typeof this != 'function') {
-        throw new TypeError(this + 'must be a action');
+        throw new TypeError(this + 'must be a function');
     }
       if(typeof context === 'number') {
         context = Number();

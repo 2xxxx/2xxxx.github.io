@@ -65,6 +65,13 @@ module.exports = {
                     '/htmlAndcss/',
                     '/htmlAndcss/css.md'
                 ]
+            }, {
+                title: '编程',
+                children: [
+                    '/code/',
+                    '/code/sort.md',
+                    '/code/uniq.md'
+                ]
             }
 
         ],

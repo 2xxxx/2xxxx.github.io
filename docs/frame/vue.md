@@ -2,16 +2,63 @@
 vue是一个mvvm结构的框架。核心思想主要是组件化和数据驱动。  
 优点：从复杂的dom操作中解放出来，由数据变化驱动页面视图更改，只要关心要显示操作哪些数据，要如何显示。  
 
-使用vue都要有一个vue 的根实例，vue的实例对象是其data属性值的代理。根的data属性是一个对象，组件内的data属性是函数。  
-
-提问，为什么组件中data是函数？对象是引用类型，当复用组件时，由于数据对象指向同一个data,一个组件修改data会造成其他复用组件的data同时修改，使用函数的话，每次都会返回不同的对象。  
+ 
 
 ## vue的生命周期  
 总共8个，  
 创建前后(beforeCreate,created)：el(Events&Lifecycle)和data都没初始化、  
 挂载前后(beforeMount,mounted)： data有初始化,el没有、  
 更新前后(beforeUpdate,updated)： 前（完成了el和data初始化，挂载虚拟dom），后（完成挂载，渲染）、  
-销毁前后(beforeDestroy,destroyed)  
+销毁前后(beforeDestroy,destroyed)    
+
+## 数据  
+
+### data
+使用vue都要有一个vue 的根实例，vue的实例对象是其data属性值的代理。根的data属性是一个**对象**，组件内的data属性是**函数**。  
+
+提问，**为什么组件中data是函数**？  
+对象是引用类型，当复用组件时，由于数据对象指向同一个data,一个组件修改data会造成其他复用组件的data同时修改，使用函数的话，每次都会返回不同的对象。   
+
+`this.变量 === this._data.变量(this.$data.变量)`。ps:`_`前缀一般是表示私有属性，以`_`或`$`开头的是vue**内置的property、API方法**，为了将内置属性名与开发人员自定义的属性名区分开，一旦自定义以这个开头将不会被Vue实例代理，以免发生冲突。  
+ 在vue中，data中定义的变量都可以通过this访问到。  
+ 原理是：vue在初始化的过程中对data做一层代理(通过Object.defineProperty重写get，set方法)，递归将Data的property转换为getter/setter,从而让data的property能响应数据变化  
+ ```js
+function initData(vm: Component) {
+    let data = vm.$options.data;
+    data = vm._data = typeof data === 'function' ? getData(data,vm) : data || {}
+    //----------
+    let i = keys.length  
+    while(i--){
+        cionst key = keys[i]
+        //---------
+        //关键  
+        proxy(vm, `_data`,key)
+    }
+}  
+
+function proxy(target:object, sourcekey:string, key: string) {
+    sharedPropertyDefinition.get = function proxyGetter () {
+    return this[sourceKey][key] // 关键
+  }
+  sharedPropertyDefinition.set = function proxySetter (val) {
+    this[sourceKey][key] = val  // 关键
+  }
+  Object.defineProperty(target, key, sharedPropertyDefinition)
+
+ ```
+
+
+ ## 特殊属性
+ * key    
+ 取值：`number | string | boolean(2.4.2)|symbol(2.5.12)`
+ key可以管理可复用元素，主要用在vue的虚拟DOM算法，在新旧nodes对比时辨别Vndes。这样vue在渲染时可以复用已有元素，而不是重新渲染，加快了渲染速度。  
+ 该特性在有些时候不符合实际需求，当你需要某个标签重新渲染时，就将该标签的key值修改。  
+ 有相同父元素的子元素要有独特的key,不然重复的key会造成渲染错误  
+
+ * ref   
+ ref被用来给元素或子组件注册引用信息，引用信息会注册在父组件的$refs对象上  
+ 注意：ref是作为渲染结果被创建的，在初始渲染时不能访问它们，因为还不存在；$refs也不是响应式的，因此不能在模板中做数据绑定
+
 
 ## 双向绑定    
 原理: 采用数据劫持结合发布者-订阅者模式的方式，通过Object.defineProperty()来劫持各个属性的setter和getter,在数据变动时发布消息给订阅者，触发相应的监听回调。  
@@ -83,7 +130,12 @@ vue是一个mvvm结构的框架。核心思想主要是组件化和数据驱动�
     }
     data.name = 2;
 </script>
-```
+```  
+
+受javaScript限制，Vue无法检测到对象的属性添加或删除。Vue在初始化实例时会对属性执行getter/setter转化，所以属性必须在data对象上存在才能转换为响应式的。后续对象再新增响应式属性需要使用Vue提供的`Vue.$set(object,propName,value)`方法。  
+vm.$set的实现原理：  
+* 如果目标是数组，直接使用数组的splice方法触发响应式；  
+* 如果目标是对象，会先判断属性是否存在、对象是否是响应式，最终决定是否进行响应式处理，通过调用defineRective方法(利用Object.defineProperty动态给对象属性添加getter和setter的功能)进行响应式处理
 
 ## vue组件通信  
 1. **props/$emit** 
@@ -113,8 +165,20 @@ $parent/$children: 访问父/子实例
 hash和history模式的区别:  
 vue默认hash模式，url改变时页面不会重新加载
 
-hash模式是通过改变锚点(#)来更新页面URL，并不会触发页面重新加载，我们可以通过window.onhashchange监听到hash的改变，从而处理路由。
-history模式是通过调用window.history对象上的一系列方法来实现页面的无刷新跳转
+**hash模式**  
+基于location.hash(#后的内容)实现的。  
+特性：
+* URL中hash值只是客户端的一种状态，也就是当向服务器发送请求时，hash部分不会被发送。  
+* hash值的改变会在浏览器中添加历史记录，可以通过浏览器前进后退来控制hash切换  
+* 通过a标签设置href属性，用户点击标签后，hash值会改变；js中对location.hash赋值，也会使之改变；  
+* hash模式是通过改变锚点(#)来更新页面URL，并不会触发页面重新加载，我们可以通过window.onhashchange监听到hash的改变，从而处理路由。  
+
+**history模式**  
+HTML5提供的History API来实现URL的变化。其中最主要的API是`history.pushState()`和`history.replaceState()`,这两个API可以在不刷新的情况下，操作浏览器的历史记录。不同的是，前一个是新增历史记录，后一个是替换当前历史记录。  
+特性：  
+* 通过调用window.history对象上的一系列方法（pushState和replaceState）来实现URL变化  
+* 使用popstate事件来监听url变化，从而对页面进行无刷新跳转  
+* history.pushState()或history.replaceState()不会触发popstate事件，这时我们需要手动触发页面跳转。
 
 
 ## 虚拟dom  
@@ -230,9 +294,11 @@ history模式是通过调用window.history对象上的一系列方法来实现�
     }
 ```
 
+### methods  
+methods会被混入到vue实例中，可以通过vm实例访问里面的方法，方法中的this自动绑定为vue实例
 
 ### 计算属性  
-变量需要进行复杂的逻辑操作是，可使用计算属性，它可以像绑定普通property一样在模板中绑定。  
+变量需要进行复杂的逻辑操作时，可使用计算属性，它可以像绑定普通property一样在模板中绑定。  
 通常我们可以将同一函数定义为方法methods，也可以定义为计算属性computed，两个方式的结果是一样的。但是不同的是，计算属性会**基于响应式依赖进行缓存**，也就是说，只有该属性依赖的响应式数据发生改变时，计算属性才会重新求值，否则计算属性就会回复上次缓存的值，不会再次执行函数。而方法methods是**每次调用时都会执行函数**。所以，当不需要缓存时，就用方法来代替计算属性。  
 提问，为什么计算属性要缓存呢？  
 为了节省计算开销，适用于计算量大或者修改频率低的情况。如果有一个计算属性要遍历庞大的数组且有大量计算，而其他计算属性又依赖于该属性时，没有缓存，会要多次执行该属性的getter。  
@@ -333,7 +399,17 @@ function defineComputed(target, key, userDef) {
     })
 }
 ```  
-由上述可知，computedWather主要是修改dity属性为true,计算属性依赖的响应式数据a被会computedWatcher订阅，即数据a的dep会收集该computedWatcher，一旦发生变化，就会触发computedWather更新，dirty置为true,重新求值；若是依赖数据没有变化，则不会触发更新，dirty仍为false，render不会重新求值，这样就起到了缓存的作用
+由上述可知，computedWather主要是修改dity属性为true,计算属性依赖的响应式数据a被会computedWatcher订阅，即数据a的dep会收集该computedWatcher，一旦发生变化，就会触发computedWather更新，dirty置为true,重新求值；若是依赖数据没有变化，则不会触发更新，dirty仍为false，render不会重新求值，这样就起到了缓存的作用  
+
+### 监听属性  
+当需要在数据变化时执行异步或开销较大的操作时，适合用watch来响应数据的变化，例如页面中搜索框实时搜索等可以适用。  
+watch允许执行异步操作，限制操作频率，并在得到最终结果前设置中间状态。  
+
+## Vue SSR  
+SSR是什么？  
+**服务端渲染**。由服务端来根据标签渲染成整个html片段，再直接返回给客户端。  
+**优点**  
+1. 更好的SEO,
 
 
 

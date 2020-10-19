@@ -26,4 +26,10 @@
 2. 尽量使用POST  
 3. 可以使用token来验证  
 
-ps:该攻击下，httpOnly无法防住，因为CSRF是伪装成用户发送请求，浏览器会自动携带cookie。 
+ps:该攻击下，httpOnly无法防住，因为CSRF是伪装成用户发送请求，浏览器会自动携带cookie。  
+
+**扩展**  
+* ### token  
+**验证流程**：登录后后端会通过随机数和加密算法加密账号密码生成一个token返回给客户端，客户端会将token存储起来，每次客户端请求时都需要开发者手动将token放到header中带过去，服务端每次只需要对token进行验证就能判断是否进行后续操作。  
+**作用**：token能防住CSRF攻击，因为在发送请求时，浏览器不会自动带上token。  
+**注意**：但是token无法防住XSS,因为XSS攻击成功的话，可以获取cookie、localStorage、sessionStorage内数据，甚至能直接在用户浏览器内发送ajax请求。所以两种攻击都要做好防护。

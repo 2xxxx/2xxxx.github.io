@@ -18,9 +18,9 @@ http1.0使用的是`Expires`,http1.1使用的`Cache-Control`.
 `Cache-Control`: 取值
 * public: 所有的内容都缓存(客户端和服务器)
 * private： 所有内容都缓存(客户端)，默认取值
-* no-cache：客户端缓存内容，但是是否使用有协商缓存决定
+* no-cache：客户端缓存内容，但是是否使用由协商缓存决定
 * no-store：所有内容都不会被缓存
-* max-age：max-age = xxx,缓存内容会在xxx秒后失效
+* max-age：max-age = xxx,缓存内容会在xxx秒后失效。当值=0时，会先查看资源是否有修改(检验协商缓存是否生效)，与no-cache类似
 
 **优先级**  
 两个字段同时存在时Cache-Control优先级更高。Expires主要是为了向下兼容。
@@ -74,9 +74,24 @@ document.cookie = `name = xxx;expires = $(time.toGMTString())`//设置cookie过�
 
 var t = new Date( +(new Date()) + 1000 * 120 );
 document.cookie = `name=monsterooo;expires=${t.toLocaleTimeString()}; domain=.example.com; path=/`;
-```
+```  
+扩展：  
+浏览器的cookie新增了SameSite属性，用来防止CSRF攻击和用户追踪，限制第三方的cookie.
+SameSite属性有3个值： 
+* Strict. 完全禁止第三方cookie.只有当前网页的URL与请求目标一致时才带cookie,网页跳转时不会携带cookie,也就不会记录用户状态。
+* Lax。链接，预加载请求，get表单会发送cookie,其他情况不发送第三方cookie;
+* None
+
+谷歌默认为Lax.
+Strict和Lax基本能杜绝CSRF攻击（需用户浏览器支持SameSite,浏览器>=chrome51）
+
+解决：  
+1.设置代理
+2.用火狐浏览器调试；
+3.谷歌浏览器关闭SameSite属性，改为none,前提是必须同时设置Secure属性（Cookie 只能通过 HTTPS 协议发送），否则无效。  
+
 ps:考虑到安全，应该使用session或token.  
-**session**:记录用户的会话，存储在服务端，根据session id来确认用户身份。但是当访问增多时会占用服务器性能，session用户在20分钟内没操作的话就会删除。但是使用session也需要依赖cookie，sessionId会存储在cookie中，如果cookie被禁用，则会将seesionId写在URL中。
+**session**:记录用户的会话，存储在服务端，根据session id来确认用户身份。但是当访问增多时会占用服务器性能，session用户在20分钟内没操作的话就会删除。但是使用session也需要依赖cookie，sessionId会存储在cookie中，如果cookie被禁用，则会将sessionId写在URL中。
 
 
 ### localStorage 和 sessionStorage

@@ -377,8 +377,60 @@ console.log(target.a) //1
 proxy的优势： 
 1. 能够监听到数组和对象的变动。   
 原因： Object.defineProperty只能劫持对象的属性，需要遍历对象的每个属性，当对象新增属性时，需要重新遍历对象，对新增属性进行劫持。而Proxy是直接代理对象，proxy可以直接通过set方法拦截到对象属性和数组的设置。  
-ps:vue2.0中通过vm.$set实现对数组和对象的响应，当target是数组时，调用重写的splice方法更新数组，当target是对象时，如果不是响应式对象或者属性key本就存在就直接赋值，否则调用defineReactive给数据添加getter和setter  
-  
+ps:vue2.0中通过vm.$set实现对数组和对象的响应，当target是数组时，调用重写的splice方法更新数组，当target是对象时，如果不是响应式对象或者属性key本就存在就直接赋值，否则调用defineReactive给数据添加getter和setter    
+
+
+## 类的继承  
+class的声明  
+```js
+//当父类是内置的Object()时，可以省略extends Object
+class MyObj {
+    constructor(){
+        //...不需要指定构造过程时，constructor可以省略
+    }
+}
+//等价于 
+function MyObj(){}
+```  
+使用class关键字进行类声明的优势：可以使用extens关键字声明父类。  
+例如：  
+```js
+class MyObjEx extends MyObj{
+    //...
+}
+//效果相当于
+MyObjEx.prototype = new MyObj();
+MyObjEx.prototype.constructor = MyObjEx;
+
+```  
+但是在使用extends时需要注意，由于class关键字声明的代码块是处在严格模式中，所以extends也处在严格模式下，extends的表达式中某些情况会报错(比如向未声明的变量赋值)  
+
+在上例中，利用原型继承可以传参，比如`MyObjEx.prototype = new MyObj(x,y);`,class声明想要实现类似效果，可以使用super关键字，它可以调用父类的构造方法，例如：  
+```js
+class MyObjEx extends MyObj{
+    constructor() {
+        super(x,y)
+    }
+}
+//super相当于 
+MyObj.apply(this,[x, y])
+```
+注意：有extends时，子类在constructor中（使用this前）必须调用super()，因为子类没有自己的this对象，而是调用父类的this对象，如果不调用super,子类就得不到this对象，就会导致报错    
+
+* 调用父类方法,也是使用super.xxx 
+```js
+class MyObj{
+    foo(x){
+
+    }
+}
+
+class MyObjEx extends MyObj {
+    foo(x,y) {
+        super.foo(x)  //调用父类同名方法
+    }
+}
+```
 
 
 

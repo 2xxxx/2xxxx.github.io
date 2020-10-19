@@ -31,13 +31,22 @@ son.prototype= new father()
 //弊端son.prototype.constructor指向father，son的实例化对象共享father自身的引用类型属性
 
 ```  
-ps: new的实现  
+扩展: new的实现  
 1. 新建一个Object对象  
-2. 构造函数的显示原型等于实例函数的隐式原型  
-3. 通过call,apply绑定到实例上  
-4. 通过new创建的每个对象会链接到这个实例的prototype对象上  
-5. 如果函数（实例）没有返回对象类型Object,那么new表达式中的函数调用会自动返回第一步创建的全新对象  
+2. 构造函数的显式原型等于实例函数的隐式原型（继承父类原型上的方法 ）  
+3. 通过call,apply绑定到实例上,通过new创建的每个对象会链接到这个实例的prototype对象上(添加父类的属性到新的对象上并初始化. 保存方法的执行结果)  
+4. 如果函数（实例）没有返回对象类型Object,那么new表达式中的函数调用会自动返回第一步创建的全新对象  
 
+```js
+function ownNew(obj, ...rest){
+    //基于obj原型创建一个新的对象
+    const newObj = Object.create(obj.prototype);
+    //添加属性到新创建的newObj上，并获取obj函数的执行结果
+    const result = obj.apply(newbj, rest);
+    //如果执行结果有返回值且是一个对象，返回执行的结果，否则，返回新创建的对象
+    return typeof result === 'object' ? result : newObj;
+}
+```
 提问，为什么用new调用，不直接调用？  
 用new调用，会新建一个实例对象，构造函数原型上的属性和方法都继承到实例对象中，this会指向该实例，如果直接调用，this会指向window,也就无法继承构造函数的属性。  
 

@@ -26,15 +26,31 @@ console.log(!!num) //false
 ps:`typeof null`为`object`
 
 #### instanceof
-`obj instanceof constructor`
-`instanceof`是利用原型链来判断，构造函数的prototype指向的对象是否在obj对象的原型链上，可用来判断数组、正则等
+`obj instanceof constructor`  s
+`instanceof`是利用原型链来判断构造函数的prototype指向的对象是否在obj对象的原型链上，可用来判断数组、正则等  
+手写：
+```js
+const ownInstanceof = (target, origin) => {
+    //非object直接返回false
+    if(typeof target !== 'object' || target === null) return false
+    //getProtypeOf是Object对象自带的一个方法，能够拿到参数的原型对象
+    var proto = Object.getPrototypeOf(target);
+    while(proto) {
+        if(proto === origin.prototype) {
+            return true
+        }
+        proto = Object.getPrototypeOf(target);
+    }
+    return false
+}
+```
 
 #### Object.prototype.toString
 ```js
 const arr = [1, 2, 3];
 console.log(Object.prototype.toString.call(arr)) //"[object Array]"
 ```
-call是用来改变toString方法的执行上下文，可用apply代替  
+call是用来改变toString方法的执行上下文(this指向)，从而获得对象的内置属性，可用apply代替  
 
 扩展: Object.prototype.toString可以判断函数是同步还是异步   
 ```js
