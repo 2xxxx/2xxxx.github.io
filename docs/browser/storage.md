@@ -109,4 +109,10 @@ console.log(localStorage.order) //123
 localStorage.removeItem('order')
 localStorage.clear()
 
-```
+```  
+
+### IndexedDB  
+IndexedDB是浏览器提供的本地数据库。相比与上述的存储方式，它的优势在于：  
+1. 存储空间更大。一般不少于250MB。  
+2. 异步。异步是为了防止大量数据的读写，拖慢网页的表现，而localStorage的话是同步操作的。  
+3. 支持二进制存储。IndexedDB不仅支持字符串存储，还支持存储二进制数据，而localStorage只支持字符串存储

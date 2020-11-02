@@ -6,7 +6,19 @@ vue是一个mvvm结构的框架。核心思想主要是组件化和数据驱动�
 
 ## vue的生命周期  
 总共8个，  
-创建前后(beforeCreate,created)：el(Events&Lifecycle)和data都没初始化、  
+创建前后(beforeCreate,created)：处在实例化Vue的阶段，在_init方法中执行。该阶段没有渲染DOM,所以不能访问DOM。    
+```js
+Vue.prototype._init = function(options?: Object) {
+    initLifecycle(vm);
+    initEvents(vm);
+    initRender(vm);
+    callHook(vm,'beforeCreate');
+    initInjection(vm);
+    initState(vm); //初始化props、data、methods、watch、computed等属性  
+    initProvide(vm);
+    callHook(vm,'created')
+}
+```
 挂载前后(beforeMount,mounted)： data有初始化,el没有、  
 更新前后(beforeUpdate,updated)： 前（完成了el和data初始化，挂载虚拟dom），后（完成挂载，渲染）、  
 销毁前后(beforeDestroy,destroyed)    
@@ -21,7 +33,7 @@ vue是一个mvvm结构的框架。核心思想主要是组件化和数据驱动�
 
 `this.变量 === this._data.变量(this.$data.变量)`。ps:`_`前缀一般是表示私有属性，以`_`或`$`开头的是vue**内置的property、API方法**，为了将内置属性名与开发人员自定义的属性名区分开，一旦自定义以这个开头将不会被Vue实例代理，以免发生冲突。  
  在vue中，data中定义的变量都可以通过this访问到。  
- 原理是：vue在初始化的过程中对data做一层代理(通过Object.defineProperty重写get，set方法)，递归将Data的property转换为getter/setter,从而让data的property能响应数据变化  
+ 原理是：vue在初始化的过程中对data做一层代理(通过重写get，set方法)，递归将Data的property转换为getter/setter,从而让data的property能响应数据变化  
  ```js
 function initData(vm: Component) {
     let data = vm.$options.data;
@@ -135,7 +147,16 @@ function proxy(target:object, sourcekey:string, key: string) {
 受javaScript限制，Vue无法检测到对象的属性添加或删除。Vue在初始化实例时会对属性执行getter/setter转化，所以属性必须在data对象上存在才能转换为响应式的。后续对象再新增响应式属性需要使用Vue提供的`Vue.$set(object,propName,value)`方法。  
 vm.$set的实现原理：  
 * 如果目标是数组，直接使用数组的splice方法触发响应式；  
-* 如果目标是对象，会先判断属性是否存在、对象是否是响应式，最终决定是否进行响应式处理，通过调用defineRective方法(利用Object.defineProperty动态给对象属性添加getter和setter的功能)进行响应式处理
+* 如果目标是对象，会先判断属性是否存在、对象是否是响应式，最终决定是否进行响应式处理，通过调用defineRective方法(利用Object.defineProperty动态给对象属性添加getter和setter的功能)进行响应式处理  
+
+## 内置方法  
+* nextTick：在下次DOM循环更新后执行的延迟回调    
+用法： 在修改数据后使用这个方法，获取更新后的DOM。  
+原理：Vue是异步更新DOM的，在修改数据后，视图不会立即更新，而是等同一个事件循环(执行栈中的同步任务)中所有数据变化完成后再统一更新  
+流程：  
+1. （1）修改数据，都是同步任务，还未涉及到DOM。（2）开启一个异步队列，缓冲事件循环中的数据变化，如果同一个watcher被多次触发，只会被推入到队列中一次。  
+2. 同步任务执行完后，执行异步watcher队列的队列来更新DOM。Vue在内部对异步队列使用原生的Promise.then和MessageChannel方法，如果执行环境不支持，就使用setTimeout(fn,0)代替。  
+3. DOM更新结束后，通过nextTick获取到改变后的DOM。
 
 ## vue组件通信  
 1. **props/$emit** 
@@ -151,14 +172,81 @@ ebus.$off(event, cb); //在组件销毁是可取消响应，以免冲突
 ```
 
 3. **Vuex**  
-是vue的状态管理器，Vuex实现了一个单向数据流，在全局拥有一个State存放数据，当组件要更改State中数据时，必须通过Mutation(commit，同步)修改，异步操作或者批量同步操作则使用Action(dispatch),但Action也是通过Mutation修改State中的数据。最后根据state数据渲染到视图上。getters是State对象的读取方法。  
+是vue的状态管理器，集中存储管理所有组件的状态，Vuex实现了一个单向数据流，在全局拥有一个State存放数据，当组件要更改State中数据时，必须通过Mutation(commit，同步)修改，异步操作或者批量同步操作则使用Action(dispatch),但Action也是通过Mutation修改State中的数据。最后根据state数据渲染到视图上。getters是State对象的读取方法。  
 Vuex存储的数据是响应式的，但是不会保存起来，刷新页面后就会回到初始状态，要想刷新后保存，需要存储在localStorage中（只支持字符串，需要JSON转换）。  
 
-4.**$parent/$children与ref**  
+4. **$parent/$children与ref**  
 ref: 在普通DOM上使用，引用指向的就是DOM元素，在子组件上使用，就是指向组件实例。  
-$parent/$children: 访问父/子实例  
+$parent/$children: 访问父/子实例    
 
-还有其他通信方法，不常用就没列举。  
+5. **provide和inject**  
+应用场景：当父组件有一个方法fn，它的子组件A，子组件的子组件B,子组件的子组件的子组件c都要使用这个方法，A要访问是用`this.$parent.fn()`,B要访问是`this.$parent.$parent.fn()`,c要访问是用`this.$parent.$parent.$paren.fn()`,如果嵌套很多层访问就很麻烦，这时候就能在父组件中使用`provide`来提供被访问的函数，子组件就使用`inject`导入父组件的函数。  
+使用：  
+provide取值：一个对象或是返回一个对象的函数  
+inject取值：一个字符串数组或是一个对象（对象的key是本地的绑定名）
+```js
+// A
+export default {
+    provide: function() {
+        return {
+            fn: this.fn
+        }
+    },
+    data() {},
+    methods: {
+        fn() {}
+    }
+}
+
+//B
+export default {
+    inject: ['fn'],
+    props: [],
+    created() {
+        this.fn()
+    }
+}
+    
+
+```
+
+还有其他通信方法，不常用就没列举。   
+
+### minxins  
+minxins是一种实现功能复用的方式，可以定义共用的变量，在组件中使用。  
+使用：先定义一个包含需要复用的组件选项的对象，将混入对象导出，在需要复用的组件中导入混入对象，把混入对象混入到当前组件中。    
+```js
+//定义混入对象
+export const myMixin = {
+    data() {
+        return {
+            text:1,
+        }
+    },
+    created() {},
+    methods: {
+
+    }
+}  
+//将混入对象混入到当前组件中
+<template>
+    <div></div>
+</template>
+<script>
+import {myMixin} from '@/assets/mixin.js'
+export default {
+    mixins: [myMixin]
+}
+</script>
+
+```
+特点：  
+1. 方法和参数在各组件间不共享，组件内修改不会相互影响。  
+2. 值为对象的选项，像methods,components这些，选项会合并，如果有冲突，组件中的会覆盖掉混入对象中的。  
+3. 值为函数的选项，像created,mounted等，会被合并调用，先调用混入对象里钩子函数内的方法，再调用组件内钩子函数的。  
+区别：  
+* 与vuex对比，vuex是做状态管理，里面的变量每个组件都能访问和修改，是相互影响的。  
+* 与公共组件对比，公共组件中父组件单独开辟一块独立空间给子组件，使用props传值，本质上两者是独立的；而mixins则是在组件原有的对象和方法上进行扩展，融为一体。
 
 
 ## vue-router  
@@ -409,7 +497,38 @@ watch允许执行异步操作，限制操作频率，并在得到最终结果前
 SSR是什么？  
 **服务端渲染**。由服务端来根据标签渲染成整个html片段，再直接返回给客户端。  
 **优点**  
-1. 更好的SEO,
+1. 更好的SEO，搜索引擎的爬虫工具可以直接查看完全渲染的页面。    
+2. 解决首屏加载速度过慢的问题。  
+**缺点**   
+1. 开发条件受限。SSR目前只支持beforeCreate和created生命周期钩子函数，有些代码可能需要特殊处理  
+2. 构建设置和部署要求更高。以前的完全静态单页面程序（SPA）可以部署在任何静态文件服务器上，而SSR需要处于Node.js server环境下  
+3. 更多的服务器负载
+
+## 指令  
+
+### 自定义指令
+目的: 对普通的DOM元素进行底层操作  
+
+## vue-cli  
+基于Vue.js进行快速开发的完整系统，实现交互式的项目脚手架  
+
+配置：  
+* proxyTable:设置后可以实现开发环境下跨域  
+
+vue-cli配置优化  
+1. preload. 指定页面加载后很快会被用到的资源（js、css文件）.`<link rel="preload">`  
+```js
+module.exports = {
+    chainWebpack: config => {
+        //移除preload插件
+        config.plugins.delete('prefetch')
+    }
+}
+```  
+2. prefetch.告诉浏览器在页面加载完成后，利用空闲时间提前获取用户未来可能会访问的内容  
+3. 处理静态资源。  
+（1）从相对路径导入。在js、css或.vue文件中使用相对路径引用静态资源时，这类引用会被webpack处理，可以减少http请求数量。放在public目录下或通过绝对路径则会直接拷贝  
+4.图片压缩。在vue.config.js中使用image-webpack-loader.执行很长的loader可以在之前使用cache-loader缓存下来
 
 
 

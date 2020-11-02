@@ -10,20 +10,21 @@ GET /HTTP/1.0        //协议版本
 User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.135 Safari/537.36  
 Accept: */*     //接收格式
  ```
-**请求方法**
-http/1.1定义的请求方法有8中：`GET`(完整请求一个资源),`POST`(提交表单),`PUT`(上传文件)，`DELETE`(删除),`PATCH`、`HEAD`(仅请求响应头部)，`OPTIONS`(返回请求的资源所支持的方法)，`TRACE`(追踪一个资源请求中间所经过的代理)。  
+* 请求方法  
+http/1.1定义的请求方法有8种：`GET`(完整请求一个资源),`POST`(提交表单),`PUT`(上传文件)，`DELETE`(删除),`PATCH`、`HEAD`(仅请求响应头部)，`OPTIONS`(返回请求的资源所支持的方法)，`TRACE`(追踪一个资源请求中间所经过的代理)。  
 其中常用的是GET和POST，GET和POST的区别：  
 1. GET将参数包含在URL中，而POST通过requet body传递参数；  
 2. GET请求只能进行url编码，而POST支持多种编码格式;  
 3. GET请求传送的参数有大小限制，不能大于2kb，post没有；  
-4. 浏览器执行XMLRequest Post请求时分两步，先发HTTP Header,再发data，要发两个TCP数据包，得发两次。而GET只用一个TCP数据包(`header+data`) 发送数据。（ps:火狐POST时只发送一次）
+4. ~~浏览器执行XMLRequest Post请求时分两步，先发HTTP Header,再发data，要发两个TCP数据包，得发两次。而GET只用一个TCP数据包(`header+data`) 发送数据（ps:火狐POST时只发送一次）~~ 该原因在扩展1中声明  
+5. GET请求会被浏览器主动cache,而POST不会，需要手动设置
 
 响应报文由  
 **状态行**(协议版本、状态码、状态码描述)、  
 **响应头部**(Server: 服务器应用程序软件的名称和版本、Content-Type: 响应数据类型、Content-Length:长度、Content-Charset:数据使用的编码、Content-Encoding:数据的压缩格式、Content-Language:使用的语言)、  
 **响应数据**组成
 
-回应头：  
+响应头：  
 ```json
 HTTP/1.0 200OK    //状态码
 Content-Type: image/gif
@@ -35,7 +36,7 @@ Server: Apache 0.84
 **Expires**和**Last-modified**是[浏览器缓存](../browser/storage)中强缓存和协商缓存的判断依据。  
 
 不足：每个TCP连接只能发送一个请求，TCP连接每次都要经过三次握手和四次挥手，连接成本较高，导致http1.0版本性能较差。  
-为了解决上述问题，可以在请求头加上`Connection:keep-alive`(非标准字段),要求服务器不要关闭TCP连接，实现TCP复用，知道客户端通知服务器关闭连接。 
+为了解决上述问题，可以在请求头加上`Connection:keep-alive`(非标准字段),要求服务器不要关闭TCP连接，实现TCP复用，直到客户端通知服务器关闭连接。 
 
 
 ## http1.1 
@@ -69,8 +70,7 @@ http/1.1版本进一步完善了http协议。做出许多改进：
 1. http1.x是序列和阻塞机制，一次执行一个请求，如果前一个请求处理事件过长，会阻塞后一个请求的处理；
 2. http1.x是文本传输，而不是二进制传输，没有流的概念，倘若有多路请求，无法区分哪个响应对应哪个请求，也就无法进行多路复用
 
-HTTP2可以多路复用，
-多路复用归功于， HTTP/2 中的 帧（frame）和流（stream）。帧代表着最小的数据单位，每个帧会标识出该帧属于哪个流，流也就是多个帧组成的数据流。就是在一个 TCP 连接中可以存在多条流。
+HTTP2可以多路复用归功于， HTTP/2 中的 帧（frame）和流（stream）。帧代表着最小的数据单位，每个帧会标识出该帧属于哪个流，流也就是多个帧组成的数据流。就是在一个 TCP 连接中可以存在多条流。
 而Http 1.x 并没有这个标识
 
   
@@ -84,7 +84,10 @@ https是经过SSL或TLS加密过的协议，是以安全为目标的http协议�
 2. 在谷歌浏览器中,https协议的网站搜索排名更高。  
 
 缺点：  
-1. 加载时间会比http协议的网站更长   
+1. 加载时间会比http协议的网站更长     
+2. ssl证书的信用链体系并不是完全安全  
+3. 需要购买证书  
+4. https协议的安全是有范围的，在黑客攻击、拒绝服务攻击、服务器劫持等方面几乎起不到作用
 
 
 **https握手过程**  
@@ -103,7 +106,7 @@ https是经过SSL或TLS加密过的协议，是以安全为目标的http协议�
 
 **如何劫持https的请求**
 1. 在客户端去请求域名对应IP时，**对DNS解析进行拦截**，返回黑客伪造的IP给客户端，客户端会访问到黑客伪造的网站。  
-2. **攻破CA机构的证书服务器，伪造一套SSL秘钥对和证书**，https连接时服务端将伪造的数字证书发送给客户端，与之进行连接，一般来说是无法攻破的。  
+2. **攻破CA机构的证书服务器，伪造一套SSL秘钥对和证书**，https连接时服务端将伪造的数字证书发送给客户端，与之进行连接，一般来说是CA无法攻破的。  
 
 
 ## websocket  
@@ -160,4 +163,23 @@ ws.send() //发送请求
 
 ps:尽量使用301跳转，302有网址劫持的隐患，
 由于302语义不明确，http1.1又针对302细化出了303和307，区别是：当用POST请求新的URL时，303会直接改用为GET方法请求，307会询问用户是否用GET请求；当用GET请求新的URL时，两者表现一样。  
+
+
+## 扩展  
+1. 要发两次的情况是先发OPTIONS进行"预检"，再发请求。    
+    请求一般分为两种：**简单跨域请求**和**复杂跨域请求**  
+    简单跨域请求要求满足以下的条件：  
+    1. http方法范围（HEAD,GET,POST其中之一）  
+    2. http头部信息不超出以下字段：  
+        * Accept  
+        * Accept-Language  
+        * Content-Language  
+        * Last-Event-ID  
+        * content-type(范围：application/x-www-form-urlencoded、multipart/form-data、text/plain)  
+    简单跨域请求无论是GET方法还是POST方法都是发送一次。  
+
+    复杂跨域请求会在正式通信前增加一次HTTP请求，叫做“预检”请求，来获知服务器是否允许该实际请求。  
+    解决发送两次请求方法：  
+    1. 使用简单跨域请求。不太适合所有场景，有局限性。  
+    2. 设置Acceess-Control-Max-Age(预请求返回结果的缓存时间，单位秒)
 

@@ -202,25 +202,43 @@ promise().then(res => {
 ```js
 function ownPromise() {
     this.status = 'pending';
-    this.msg = '';
-    var process = arguments[0];
-    var that = this;
-    process(function() {
-        that.status = 'resolve';
-        that.msg = arguments[0];
-    },function() {
-        that.status = 'reject';
-        that.msg = arguments[0];
-    })
-    return this;
+    this.value = null;
+    this.rason = null;
+    this.onFulfilledCallback = [];
+    this.onRejectedCallback = [];
+    let that = this;
+    function resolve(value) {
+        if(that.status === 'pending') {
+            that.status = 'fulfilled';
+            that.value = value;
+            that.onFulfilledCallback.forEach(item => {item(that.value)})
+        }
+    }   
+    function reject(reason) {
+        if(that.status === 'pending') {
+            that.status = 'rejected';
+            that.reason = reason;
+            that.onRejectedCallback.forEach(item => {item(that.reason)})
+        }
+    } 
+    try{
+        excutor(resolve,reject)
+    }catch(err) {
+        reject(err)
+    }
 }
 
-ownPromise.prototype.then = function() {
-    if(this.status === 'resolve') {
-        arguments[0](this.msg);
+ownPromise.prototype.then = function(onFulfilled, onRejected) {
+    let that = this;
+    if(that.status === 'pending') {
+        that.onFullfilledCallback.push(onFulfilled);
+        that.onRejectedCallback.push(onRejected);
     }
-    if(this.status === 'reject'&&arguments[1]) {
-        arguments[1](this.msg);
+    if(that.status === 'fulfilled') {
+        onFulfilled(that.value)
+    }
+    if(that.status === 'rejected') {
+        onRejected(that.reason)
     }
 }
 ```
@@ -255,7 +273,7 @@ function promiseAll(promises) {
         if(!Array.isArray(promises)) {
             return reject(new TypeError('arguments must be an array'));
         }
-        let resolvedCount = 0,promiseNum = prmises.length;
+        let resolvedCount = 0,promiseNum = promises.length;
         let resolvedValues = new Array(promiseNum);
         for(let i = 0; i < promiseNum; i++) {
            Promise.reolve(promises[i]).then(
@@ -278,6 +296,25 @@ function promiseAll(promises) {
 
 **promise.race()**  
 用法与promise.all()类似，不同的是适用场景，promise.race()是只要其中的promise实例有结果，无论成功或失败，promise.race()的状态就会改变，返回单个结果  
+手写promise.race()  
+```js
+function promiseRace(promises) {
+    return new Promise((resolve,reject) => {
+        if(!Array.isArray(promises)) {
+            return reject(new TypeError('arguments must be an array'))
+        }
+        let promiseLen = promises.length;
+        for(let i = 0; i< promiseLen; i++) {
+            Promise.resolve(promises[i]).then((res) => {
+                return resolve(res)
+            }).catch((err) => {
+                return reject(err)
+            })
+        }
+    })
+}
+
+```
 
 **promise异步串联**  
 适用场景：当多个promise实例需要按顺序执行时，使用异步串联  
@@ -391,7 +428,9 @@ class MyObj {
 }
 //等价于 
 function MyObj(){}
-```  
+```    
+* 使用class继承  
+主要依靠`extends`和`super`
 使用class关键字进行类声明的优势：可以使用extens关键字声明父类。  
 例如：  
 ```js

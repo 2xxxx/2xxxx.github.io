@@ -87,4 +87,7 @@ Vue.http.options.credentials = true;
 
 5. postMessage跨域  
 
-6. window.name跨域
+6. window.name跨域  
+
+总结：  
+平时常用的方法主要是JSONP、CORS和nginx代理，nginx接触不多；JSONP只支持GET请求，优势在于可以支持老浏览器；CORS支持所有类型的http请求，但是兼容性没有JSONP强

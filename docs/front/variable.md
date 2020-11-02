@@ -39,7 +39,7 @@ const ownInstanceof = (target, origin) => {
         if(proto === origin.prototype) {
             return true
         }
-        proto = Object.getPrototypeOf(target);
+        proto = Object.getPrototypeOf(proto);
     }
     return false
 }

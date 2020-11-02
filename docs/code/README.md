@@ -6,7 +6,7 @@
 ```js  
 function debounce(fn, context, arg, time, immediate) {
     return function() {
-        fn.curtime = new Date.noe();
+        fn.curtime = new Date.now();
         if(!fn.starttime) {
             if(immediate) fn.call(context, arg)
             
@@ -87,9 +87,11 @@ function deepClone(obj) {
         //非复杂类型直接返回，也是结束递归的条件
         return obj
     }
-    var newObj = new obj._proto_.constructor;
+    var newObj = Array.isArray(obj) ? [] : {};
     for(var key in obj) {
-        newObj[key] = deepClone(obj[key])
+        if(obj.hasOwnProperty(key)) {
+            newObj[key] = deepClone(obj[key])
+        }  
     }
     return newObj
 }

@@ -163,7 +163,7 @@
 .content {
     position: absolute;
     top: calc(50% -50px);
-    left: calc(50% - 50%);
+    left: calc(50% - 50px);
 }
 ```  
 

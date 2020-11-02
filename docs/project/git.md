@@ -20,5 +20,21 @@
 * 覆盖分支：  
 例如：分支aaa覆盖master分支  
 首先切换到master分支，执行`git reset --hard origin/aaa`;  
-此时master(本地)分支的代码已被覆盖，再执行`git push -f`推送到远程分支  
+此时master(本地)分支的代码已被覆盖，再执行`git push -f`推送到远程分支    
+ 
+
+在git中，用HEAD表示当前版本  
+git HEAD  
+`git HEAD~` 表示上一版本  
+`git HEAD~100`表示往上100个版本
+
+撤销add
+恢复未提交的更改：`git checkout <file>`   
+取消之前git add添加： `git reset HEAD <file>`   
+ 
+撤销commit  
+回退到上一版本： `git reset --hard HEAD~`  
+回退到指定版本： `git reset --hard 版本id`  
+版本直接回退，如果远程
+
 
